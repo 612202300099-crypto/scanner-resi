@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { getClientConfig } from '@/lib/storage';
+import { getClientConfig } from '@/lib/clientStorage';
 
 // Import scanner dinamis agar tidak load di SSR Next.js
 const ScannerComponent = dynamic(() => import('@/components/ScannerComponent'), {

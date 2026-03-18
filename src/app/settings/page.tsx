@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getClientConfig, saveClientConfig } from '@/lib/storage';
+import { getClientConfig, saveClientConfig } from '@/lib/clientStorage';
 
 export default function Settings() {
     const [config, setConfig] = useState({
