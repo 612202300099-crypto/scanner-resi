@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { addScan, getTodayScans, ScannedItem } from '@/lib/storage';
 import { appendToSheet } from '@/lib/sheets';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
     try {
@@ -14,45 +12,30 @@ export async function POST(req: Request) {
             );
         }
 
-        // Cek duplikat untuk hari ini
-        const todayScans = getTodayScans();
-        const isDuplicate = todayScans.some(
-            (scan) => scan.tracking_number === tracking_number
-        );
+        // Seluruh cek duplikat & penyimpanan data sekarang DIAMBIL ALIH OLEH GOOGLE SHEET (Master Serverless)
+        const sheetResponse = await appendToSheet({
+            action: 'SCAN',
+            tracking_number: tracking_number
+        });
 
-        if (isDuplicate) {
+        // App Script mendeteksi bahwa resi tersebut sudah tertulis di Excel
+        if (sheetResponse.is_duplicate) {
             return NextResponse.json(
-                { success: false, error: 'Resi sudah pernah discan hari ini', isDuplicate: true },
+                { success: false, error: 'Telah discan!', isDuplicate: true },
                 { status: 409 }
             );
         }
 
-        // Coba tambahkan ke Google Sheets
-        try {
-            await appendToSheet(tracking_number);
-        } catch (sheetError: any) {
-            console.error(sheetError);
-            return NextResponse.json(
-                { success: false, error: 'Gagal menghubungi Google Sheets: ' + sheetError.message },
-                { status: 500 }
-            );
-        }
+        return NextResponse.json({
+            success: true,
+            message: 'Resi berhasil ditambahkan',
+            item: { tracking_number, status: 'success', scanned_at: sheetResponse.scanned_at || new Date().toISOString() }
+        });
 
-        // Jika sukses di Google Sheets, tambahkan ke storage lokal / memory
-        const newItem: ScannedItem = {
-            id: uuidv4(),
-            tracking_number,
-            scanned_at: new Date().toISOString(),
-            status: 'success'
-        };
-
-        addScan(newItem);
-
-        return NextResponse.json({ success: true, message: 'Resi berhasil ditambahkan', item: newItem });
     } catch (error: any) {
         console.error("Scan error:", error);
         return NextResponse.json(
-            { success: false, error: 'Terjadi kesalahan sistem.' },
+            { success: false, error: error.message || 'Terjadi kesalahan sistem HTTPS.' },
             { status: 500 }
         );
     }

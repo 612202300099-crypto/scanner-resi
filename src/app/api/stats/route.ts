@@ -1,21 +1,33 @@
 import { NextResponse } from 'next/server';
-import { getTodayScans, getConfig } from '@/lib/storage';
+import { appendToSheet } from '@/lib/sheets';
+import { getConfig } from '@/lib/storage';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-    const scans = getTodayScans();
-    const sortedScans = [...scans].sort(
-        (a, b) => new Date(b.scanned_at).getTime() - new Date(a.scanned_at).getTime()
-    );
+    try {
+        const config = getConfig();
 
-    const lastScanned = sortedScans.length > 0 ? sortedScans[0] : null;
-    const config = getConfig();
+        // Tanya langsung ke Master Data (Google Sheet)
+        const sheetResponse = await appendToSheet({
+            action: 'GET_STATS'
+        });
 
-    return NextResponse.json({
-        totalScannedToday: scans.length,
-        target: config.dailyTarget,
-        lastScanned: lastScanned,
-        recentHistory: sortedScans.slice(0, 5) // Ambil 5 riwayat terbaru
-    });
+        return NextResponse.json({
+            totalScannedToday: sheetResponse.total || 0,
+            target: config.dailyTarget,
+            lastScanned: sheetResponse.recentHistory?.[0] || null,
+            recentHistory: sheetResponse.recentHistory || []
+        });
+
+    } catch (e: any) {
+        console.error("Gagal ambil stat dari Sheet:", e.message);
+        // Fallback damai jika gagal connect (misal awal install belum pasang App Script)
+        return NextResponse.json({
+            totalScannedToday: 0,
+            target: getConfig().dailyTarget,
+            lastScanned: null,
+            recentHistory: []
+        });
+    }
 }

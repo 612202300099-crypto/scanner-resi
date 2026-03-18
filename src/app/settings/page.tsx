@@ -57,44 +57,75 @@ export default function Settings() {
     const scriptCode = `function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
+    var action = data.action; 
     var trackingNumber = data.tracking_number;
     var sheetName = data.sheetName || 'Sheet1';
     var targetColumn = data.targetColumn || 'A';
     
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var sheet = ss.getSheetByName(sheetName);
-    
-    // Auto-create jika sheet tidak ada!
     if (!sheet) {
       sheet = ss.insertSheet(sheetName);
     }
     
-    // Konversi A->1, Z->26, AA->27 
+    // Konversi A->1, Z->26, AA->27
     var colIndex = 0;
     targetColumn = targetColumn.toUpperCase();
     for (var i = 0; i < targetColumn.length; i++) {
         colIndex += (targetColumn.charCodeAt(i) - 64) * Math.pow(26, targetColumn.length - i - 1);
     }
     
-    // Cari baris terakhir yang terisi (Super Aman)
-    var values = sheet.getRange(1, colIndex, sheet.getMaxRows(), 1).getValues();
+    // BACA SELURUH ISI KOLOM (Sangat cepat di Google Sheet API)
+    var values = sheet.getRange(1, colIndex, sheet.getMaxRows(), 1).getDisplayValues();
+    var allScans = [];
     var nextRow = 1;
-    for (var i = values.length - 1; i >= 0; i--) {
+    
+    for (var i = 0; i < values.length; i++) {
       if (values[i][0] !== "") {
+        allScans.push(values[i][0].toString().trim());
         nextRow = i + 2;
-        break;
       }
     }
     
-    sheet.getRange(nextRow, colIndex).setValue(trackingNumber);
+    // 1. JIKA APLIKASI WEB MEMINTA STATISTIK AWAL HALAMAN
+    if (action === "GET_STATS") {
+      // Ambil 6 resi paling bawah (terbaru) lalu balik urutannya (terbaru di atas)
+      var recent = allScans.slice(-6).reverse().map(function(t) { 
+        return { tracking_number: t, status: 'success', scanned_at: new Date().toISOString() };
+      });
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true, 
+        total: allScans.length, 
+        recentHistory: recent
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
     
-    return ContentService.createTextOutput(JSON.stringify({
-      "success": true, "row": nextRow
-    })).setMimeType(ContentService.MimeType.JSON);
+    // 2. JIKA SEDANG MELAKUKAN PROSES SCAN RESI
+    if (trackingNumber) {
+      // PENCEGAHAN DUPLIKAT ABSOLUT: Mengecek langsung ke seluruh sheet
+      if (allScans.indexOf(trackingNumber.toString().trim()) !== -1) {
+        return ContentService.createTextOutput(JSON.stringify({
+          success: false, 
+          is_duplicate: true, 
+          error: "Tertolak! Resi sudah tercatat di Google Sheet."
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+      
+      // INSERT ROW BARU
+      sheet.getRange(nextRow, colIndex).setValue(trackingNumber);
+      
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true, 
+        row: nextRow,
+        scanned_at: new Date().toISOString()
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    throw new Error("Aksi tidak dikenali.");
     
   } catch (error) {
     return ContentService.createTextOutput(JSON.stringify({
-      "success": false, "error": error.toString()
+      success: false, error: String(error)
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }`;

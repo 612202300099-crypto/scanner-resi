@@ -1,6 +1,6 @@
 import { getConfig } from './storage';
 
-export const appendToSheet = async (trackingNumber: string) => {
+export const appendToSheet = async (payload: any) => {
     const config = getConfig();
 
     let url = config.scriptWebUrl?.trim() || '';
@@ -39,7 +39,7 @@ export const appendToSheet = async (trackingNumber: string) => {
                 "Content-Type": "text/plain;charset=utf-8",
             },
             body: JSON.stringify({
-                tracking_number: trackingNumber,
+                ...payload,
                 sheetName: config.sheetName,
                 targetColumn: config.targetColumn,
             }),
@@ -62,8 +62,8 @@ export const appendToSheet = async (trackingNumber: string) => {
             throw new Error(`Respon aneh (Bukan JSON) dari Google: ${dataText.substring(0, 50)}...`);
         }
 
-        if (!data.success) {
-            throw new Error(data.error || "Gagal memasukkan resi ke dalam spreadsheet.");
+        if (!data.success && !data.is_duplicate) {
+            throw new Error(data.error || "Gagal memasukkan data operasional gudang.");
         }
 
         return data;
