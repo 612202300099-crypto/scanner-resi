@@ -3,7 +3,7 @@ import { appendToSheet } from '@/lib/sheets';
 
 export async function POST(req: Request) {
     try {
-        const { tracking_number } = await req.json();
+        const { tracking_number, config } = await req.json();
 
         if (!tracking_number || typeof tracking_number !== 'string') {
             return NextResponse.json(
@@ -12,11 +12,18 @@ export async function POST(req: Request) {
             );
         }
 
-        // Seluruh cek duplikat & penyimpanan data sekarang DIAMBIL ALIH OLEH GOOGLE SHEET (Master Serverless)
+        if (!config || !config.scriptWebUrl) {
+            return NextResponse.json(
+                { success: false, error: 'Belum ada URL Apps Script di pengaturan Browser Anda!' },
+                { status: 400 }
+            );
+        }
+
+        // Seluruh cek duplikat & penyimpanan data sekarang DIAMBIL ALIH OLEH GOOGLE SHEET
         const sheetResponse = await appendToSheet({
             action: 'SCAN',
             tracking_number: tracking_number
-        });
+        }, config);
 
         // App Script mendeteksi bahwa resi tersebut sudah tertulis di Excel
         if (sheetResponse.is_duplicate) {

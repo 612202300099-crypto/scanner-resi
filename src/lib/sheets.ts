@@ -1,8 +1,6 @@
-import { getConfig } from './storage';
+import { AppConfig } from './storage';
 
-export const appendToSheet = async (payload: any) => {
-    const config = getConfig();
-
+export const appendToSheet = async (payload: any, config: AppConfig) => {
     let url = config.scriptWebUrl?.trim() || '';
 
     if (!url) {

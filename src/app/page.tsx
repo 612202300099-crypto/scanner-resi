@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
+import { getClientConfig } from '@/lib/storage';
 
 // Import scanner dinamis agar tidak load di SSR Next.js
 const ScannerComponent = dynamic(() => import('@/components/ScannerComponent'), {
@@ -20,7 +21,14 @@ export default function Home() {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('/api/stats');
+      const activeConfig = getClientConfig();
+      if (!activeConfig.scriptWebUrl) return; // Jangan panggil kalau belum disetup
+
+      const res = await fetch('/api/stats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ config: activeConfig })
+      });
       if (res.ok) {
         const data = await res.json();
         setStats(data);
@@ -86,10 +94,17 @@ export default function Home() {
     setIsProcessing(true);
 
     try {
+      const activeConfig = getClientConfig();
+      if (!activeConfig.scriptWebUrl) {
+        setAlert({ type: 'danger', message: '❌ Lengkapi URL Pengaturan dulu!' });
+        setIsProcessing(false);
+        return;
+      }
+
       const res = await fetch('/api/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tracking_number: decodedText }),
+        body: JSON.stringify({ tracking_number: decodedText, config: activeConfig }),
       });
 
       const data = await res.json();

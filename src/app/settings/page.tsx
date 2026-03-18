@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getClientConfig, saveClientConfig } from '@/lib/storage';
 
 export default function Settings() {
     const [config, setConfig] = useState({
@@ -14,34 +15,26 @@ export default function Settings() {
     const [showTutorial, setShowTutorial] = useState(false);
 
     useEffect(() => {
-        fetch('/api/config')
-            .then((res) => res.json())
-            .then((data) => {
-                setConfig(data);
-                setLoading(false);
-            });
+        // Bebas akses memori HP tanpa takut Vercel Reset
+        const local = getClientConfig();
+        setConfig(local);
+        setLoading(false);
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setMessage('Menyimpan...');
+        setMessage('Menyimpan ke memori perangkat...');
         if (config.scriptWebUrl && !config.scriptWebUrl.startsWith('https://script.google.com/')) {
             setMessage('❌ Format URL tidak valid. Harus berawalan https://script.google.com/');
             return;
         }
         try {
-            const result = await fetch('/api/config', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(config),
-            });
-            const data = await result.json();
-            if (data.success) {
-                setMessage('✅ Konfigurasi berhasil disimpan!');
-                setTimeout(() => setMessage(''), 3000);
-            }
+            saveClientConfig(config);
+            setMessage('✅ URL berhasil disimpan secara permanen di alat ini!');
+            // Panggil backend dummy (opsional, jika ingin nyimpen local codebase, tp skip gpp)
+            setTimeout(() => setMessage(''), 3000);
         } catch (e) {
-            setMessage('❌ Gagal menyimpan konfigurasi');
+            setMessage('❌ Gagal menyimpn konfigurasi lokal');
         }
     };
 
