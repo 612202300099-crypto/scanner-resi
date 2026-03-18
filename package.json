@@ -24,6 +24,7 @@
     "@types/uuid": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.7",
+    "supabase": "^2.81.2",
     "typescript": "^5"
   }
 }
