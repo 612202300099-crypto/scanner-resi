@@ -22,7 +22,6 @@ export default function Home() {
   const fetchStats = async () => {
     try {
       const activeConfig = getClientConfig();
-      if (!activeConfig.scriptWebUrl) return; // Jangan panggil kalau belum disetup
 
       const res = await fetch('/api/stats', {
         method: 'POST',
@@ -95,11 +94,6 @@ export default function Home() {
 
     try {
       const activeConfig = getClientConfig();
-      if (!activeConfig.scriptWebUrl) {
-        setAlert({ type: 'danger', message: '❌ Lengkapi URL Pengaturan dulu!' });
-        setIsProcessing(false);
-        return;
-      }
 
       const res = await fetch('/api/scan', {
         method: 'POST',

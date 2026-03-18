@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { appendToSheet } from '@/lib/sheets';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
     try {
-        const { tracking_number, config } = await req.json();
+        const { tracking_number } = await req.json();
 
         if (!tracking_number || typeof tracking_number !== 'string') {
             return NextResponse.json(
@@ -12,37 +12,38 @@ export async function POST(req: Request) {
             );
         }
 
-        if (!config || !config.scriptWebUrl) {
-            return NextResponse.json(
-                { success: false, error: 'Belum ada URL Apps Script di pengaturan Browser Anda!' },
-                { status: 400 }
-            );
-        }
+        const rawResi = tracking_number.trim().toUpperCase();
 
-        // Seluruh cek duplikat & penyimpanan data sekarang DIAMBIL ALIH OLEH GOOGLE SHEET
-        const sheetResponse = await appendToSheet({
-            action: 'SCAN',
-            tracking_number: tracking_number
-        }, config);
+        // Database Injection: Memasukkan ke PostgreSQL
+        const { data, error } = await supabase
+            .from('scan_resi')
+            .insert([
+                { tracking_number: rawResi, status: 'success' }
+            ])
+            .select()
+            .single();
 
-        // App Script mendeteksi bahwa resi tersebut sudah tertulis di Excel
-        if (sheetResponse.is_duplicate) {
-            return NextResponse.json(
-                { success: false, error: 'Telah discan!', isDuplicate: true },
-                { status: 409 }
-            );
+        if (error) {
+            // Error Code 23505 = UNIQUE Constraint Violation (Barang sudah ada 100% Valid)
+            if (error.code === '23505') {
+                return NextResponse.json(
+                    { success: false, error: 'Telah discan!', isDuplicate: true },
+                    { status: 409 }
+                );
+            }
+            throw new Error(error.message);
         }
 
         return NextResponse.json({
             success: true,
             message: 'Resi berhasil ditambahkan',
-            item: { tracking_number, status: 'success', scanned_at: sheetResponse.scanned_at || new Date().toISOString() }
+            item: data
         });
 
     } catch (error: any) {
-        console.error("Scan error:", error);
+        console.error("Database error:", error);
         return NextResponse.json(
-            { success: false, error: error.message || 'Terjadi kesalahan sistem HTTPS.' },
+            { success: false, error: error.message || 'Terjadi kesalahan sistem Database.' },
             { status: 500 }
         );
     }

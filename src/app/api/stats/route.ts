@@ -1,32 +1,40 @@
 import { NextResponse } from 'next/server';
-import { appendToSheet } from '@/lib/sheets';
-import { AppConfig, getConfig } from '@/lib/storage';
+import { supabase } from '@/lib/supabase';
 
 export async function POST(req: Request) {
     try {
         const { config } = await req.json();
 
-        // Fallback ke config lokal di server bila klien tidak kirim config (baru loading)
-        const activeConfig: AppConfig = config?.scriptWebUrl ? config : getConfig();
+        // Ambil waktu tengah malam hari ini (WIB / Waktu Lokal Eksekusi)
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
 
-        if (!activeConfig || !activeConfig.scriptWebUrl) {
-            return NextResponse.json({ totalScannedToday: 0, target: 100, lastScanned: null, recentHistory: [] });
-        }
+        // Query 1: Menghitung secara Live jumlah Resi hari ini
+        const { count, error: countError } = await supabase
+            .from('scan_resi')
+            .select('*', { count: 'exact', head: true })
+            .gte('scanned_at', startOfDay);
 
-        // Tanya langsung ke Master Data (Google Sheet)
-        const sheetResponse = await appendToSheet({
-            action: 'GET_STATS'
-        }, activeConfig);
+        if (countError) throw countError;
+
+        // Query 2: Mengambil 5 Riwayat terbaru dengan cepat
+        const { data: recent, error: recentError } = await supabase
+            .from('scan_resi')
+            .select('tracking_number, status, scanned_at')
+            .order('scanned_at', { ascending: false })
+            .limit(6);
+
+        if (recentError) throw recentError;
 
         return NextResponse.json({
-            totalScannedToday: sheetResponse.total || 0,
-            target: activeConfig.dailyTarget || 100,
-            lastScanned: sheetResponse.recentHistory?.[0] || null,
-            recentHistory: sheetResponse.recentHistory || []
+            totalScannedToday: count || 0,
+            target: config?.dailyTarget || 100,
+            lastScanned: recent?.[0] || null,
+            recentHistory: recent || []
         });
 
     } catch (e: any) {
-        console.error("Gagal ambil stat dari Sheet:", e.message);
+        console.error("Gagal ambil stat Database Supabase:", e.message);
         return NextResponse.json({
             totalScannedToday: 0,
             target: 100,
