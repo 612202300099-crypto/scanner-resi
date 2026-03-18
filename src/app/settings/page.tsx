@@ -75,21 +75,20 @@ export default function Settings() {
         colIndex += (targetColumn.charCodeAt(i) - 64) * Math.pow(26, targetColumn.length - i - 1);
     }
     
-    // BACA SELURUH ISI KOLOM (Sangat cepat di Google Sheet API)
+    // BACA SELURUH ISI KOLOM secara cepat
     var values = sheet.getRange(1, colIndex, sheet.getMaxRows(), 1).getDisplayValues();
     var allScans = [];
     var nextRow = 1;
     
     for (var i = 0; i < values.length; i++) {
       if (values[i][0] !== "") {
-        allScans.push(values[i][0].toString().trim());
+        // PERBAIKAN FATAL: Memaksa semua resi (nomor/teks) di Sheet menjadi String murni agar aman dicek
+        allScans.push(String(values[i][0]).trim().toUpperCase());
         nextRow = i + 2;
       }
     }
     
-    // 1. JIKA APLIKASI WEB MEMINTA STATISTIK AWAL HALAMAN
     if (action === "GET_STATS") {
-      // Ambil 6 resi paling bawah (terbaru) lalu balik urutannya (terbaru di atas)
       var recent = allScans.slice(-6).reverse().map(function(t) { 
         return { tracking_number: t, status: 'success', scanned_at: new Date().toISOString() };
       });
@@ -100,10 +99,11 @@ export default function Settings() {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // 2. JIKA SEDANG MELAKUKAN PROSES SCAN RESI
     if (trackingNumber) {
-      // PENCEGAHAN DUPLIKAT ABSOLUT: Mengecek langsung ke seluruh sheet
-      if (allScans.indexOf(trackingNumber.toString().trim()) !== -1) {
+      var trackingStr = String(trackingNumber).trim().toUpperCase();
+      
+      // PENCEGAHAN DUPLIKAT ABSOLUT SEKARANG TERJAMIN:
+      if (allScans.indexOf(trackingStr) !== -1) {
         return ContentService.createTextOutput(JSON.stringify({
           success: false, 
           is_duplicate: true, 
@@ -111,8 +111,8 @@ export default function Settings() {
         })).setMimeType(ContentService.MimeType.JSON);
       }
       
-      // INSERT ROW BARU
-      sheet.getRange(nextRow, colIndex).setValue(trackingNumber);
+      // Murni String ' tanpa konversi numeric oleh excel
+      sheet.getRange(nextRow, colIndex).setValue("'" + trackingStr);
       
       return ContentService.createTextOutput(JSON.stringify({
         success: true, 
