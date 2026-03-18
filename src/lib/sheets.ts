@@ -1,4 +1,4 @@
-import { AppConfig } from './storage';
+import { AppConfig } from './clientStorage';
 
 export const appendToSheet = async (payload: any, config: AppConfig) => {
     let url = config.scriptWebUrl?.trim() || '';

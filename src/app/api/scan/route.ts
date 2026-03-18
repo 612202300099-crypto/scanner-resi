@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { appendToSheet } from '@/lib/sheets';
 
 export async function POST(req: Request) {
     try {
-        const { tracking_number } = await req.json();
+        const { tracking_number, config } = await req.json();
 
         if (!tracking_number || typeof tracking_number !== 'string') {
             return NextResponse.json(
@@ -32,6 +33,20 @@ export async function POST(req: Request) {
                 );
             }
             throw new Error(error.message);
+        }
+
+        // --- SISTEM TEMBUSAN PASIF ---
+        if (config && config.scriptWebUrl) {
+            try {
+                // Tembak laporannya, biarkan berjalan di latar agar kamera gak nunggu
+                // Error di sini sengaja diabaikan karena Supabase sudah sukses.
+                await appendToSheet({
+                    action: 'SCAN',
+                    tracking_number: rawResi
+                }, config);
+            } catch (err) {
+                console.log("Ignored Sheets error", err);
+            }
         }
 
         return NextResponse.json({
