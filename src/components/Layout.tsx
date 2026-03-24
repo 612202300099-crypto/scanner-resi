@@ -1,11 +1,12 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ScanLine, FileText, LogOut, Users } from 'lucide-react';
+import { LayoutDashboard, ScanLine, FileText, LogOut, Users, Menu, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useEffect, useState } from 'react';
 
 export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | null }) {
     const navigate = useNavigate();
     const [userName, setUserName] = useState<string>('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data: { user } }) => {
@@ -22,10 +23,22 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
 
     return (
         <div className="layout-wrapper">
-            <aside className="sidebar">
-                <div className="sidebar-header">
-                    <ScanLine size={32} color="var(--primary)" />
-                    <span style={{ fontSize: '1.25rem' }}>Gudang Pintar</span>
+            {/* BACKDROP MOBILE */}
+            <div
+                className={`sidebar-backdrop ${isSidebarOpen ? 'open' : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+            />
+
+            <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+                <div className="sidebar-header" style={{ justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <ScanLine size={32} color="var(--primary)" />
+                        <span style={{ fontSize: '1.25rem' }}>Gudang Pintar</span>
+                    </div>
+                    {/* Tombol Tutup Sidebar versi Mobile */}
+                    <button className="mobile-close-btn" onClick={() => setIsSidebarOpen(false)} style={{ display: 'none' }}>
+                        <X size={24} color="var(--text-muted)" />
+                    </button>
                 </div>
 
                 <nav className="sidebar-nav" style={{ flex: 1 }}>
@@ -34,6 +47,7 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
                     </div>
                     <NavLink
                         to="/scan"
+                        onClick={() => setIsSidebarOpen(false)}
                         className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                     >
                         <ScanLine size={20} />
@@ -49,6 +63,7 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
 
                             <NavLink
                                 to="/"
+                                onClick={() => setIsSidebarOpen(false)}
                                 className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                                 end
                             >
@@ -58,6 +73,7 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
 
                             <NavLink
                                 to="/data"
+                                onClick={() => setIsSidebarOpen(false)}
                                 className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                             >
                                 <FileText size={20} />
@@ -66,6 +82,7 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
 
                             <NavLink
                                 to="/karyawan"
+                                onClick={() => setIsSidebarOpen(false)}
                                 className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                             >
                                 <Users size={20} />
@@ -96,14 +113,19 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
             </aside>
 
             <main className="main-content">
-                <header className="header" style={{ display: 'flex', alignItems: 'center', background: '#ffffff', borderBottom: '1px solid var(--border)' }}>
-                    <div>
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0 }}>Modul Operasional</h2>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Otomatisasi Lapis Baja Tersambung</span>
+                <header className="header" style={{ display: 'flex', alignItems: 'center', background: '#ffffff', borderBottom: '1px solid var(--border)', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <button className="burger-menu" onClick={() => setIsSidebarOpen(true)} style={{ padding: '0.5rem', background: 'var(--background)', borderRadius: '8px', border: '1px solid var(--border)' }}>
+                            <Menu size={24} color="var(--text-main)" />
+                        </button>
+                        <div>
+                            <h2 style={{ fontSize: 'min(1.25rem, 5vw)', fontWeight: 800, margin: 0 }}>Modul Operasional</h2>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', display: 'block' }}>Otomatisasi Lapis Baja Tersambung</span>
+                        </div>
                     </div>
-                    <div className="badge badge-primary" style={{ display: 'flex', gap: '0.5rem', background: '#ecfdf5', color: '#065f46', border: '1px solid #10b981' }}>
+                    <div className="badge badge-primary" style={{ display: 'flex', gap: '0.5rem', background: '#ecfdf5', color: '#065f46', border: '1px solid #10b981', alignSelf: 'center', marginLeft: 'auto' }}>
                         <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981', alignSelf: 'center' }}></div>
-                        Sistem Online Aktif
+                        <span className="online-text">Sistem Online Aktif</span>
                     </div>
                 </header>
 

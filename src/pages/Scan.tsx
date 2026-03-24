@@ -279,10 +279,10 @@ export default function Scan() {
 
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+            <div className="mobile-flex-col" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', gap: '1rem' }}>
                 <h1 className="page-title" style={{ margin: 0 }}>Terminal Senjata Scan</h1>
                 {/* WIDGET KONEKSI INTERNET ENTERPRISE */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                     {offlineCount > 0 && (
                         <div style={{ background: '#fef3c7', border: '1px solid #f59e0b', color: '#d97706', padding: '0.5rem 1rem', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '0.875rem' }}>
                             {syncing ? <RefreshCw size={16} className="animate-spin" /> : <UploadCloud size={16} />}
@@ -297,7 +297,7 @@ export default function Scan() {
             </div>
 
             {/* TAB MODE & ALUR BARANG */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) minmax(300px, 1.5fr)', gap: '1.5rem', marginBottom: '1.5rem' }}>
+            <div className="responsive-grid" style={{ marginBottom: '1.5rem' }}>
 
                 {/* Kamera vs Keyboard Mod */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--surface)', padding: '0.5rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
@@ -359,7 +359,7 @@ export default function Scan() {
                     </h2>
                 </div>
 
-                <div style={{ padding: '3rem 2rem', background: '#f8fafc' }}>
+                <div className="mobile-padding-1" style={{ padding: '3rem 2rem', background: '#f8fafc' }}>
                     {!useCamera ? (
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <input
