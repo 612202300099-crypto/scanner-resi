@@ -530,6 +530,10 @@ video {
     width: 100% !important;
   }
 
+  .mobile-padding-1 {
+    padding: 1.5rem 1rem !important;
+  }
+
   /* Tables */
   .table-container {
     width: 100%;
