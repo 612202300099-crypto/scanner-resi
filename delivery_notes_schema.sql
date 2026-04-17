@@ -2,8 +2,8 @@
 -- 🚀 SKEMA DATABASE BERITA ACARA (DELIVERY NOTES)
 -- ==============================================================================
 
--- 1. Buat Tabel
-CREATE TABLE public.delivery_notes (
+-- 1. Buat Tabel (Jika belum ada)
+CREATE TABLE IF NOT EXISTS public.delivery_notes (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at timestamp with time zone DEFAULT now() NOT NULL,
   note_date date NOT NULL,
@@ -16,12 +16,21 @@ CREATE TABLE public.delivery_notes (
   user_name text NOT NULL
 );
 
+-- UPDATE V2: Menambahkan kolom penampungan gambar base64
+ALTER TABLE public.delivery_notes ADD COLUMN IF NOT EXISTS photo_data text;
+
 -- 2. Optimasi Pencarian
-CREATE INDEX idx_delivery_notes_date ON public.delivery_notes (note_date);
-CREATE INDEX idx_delivery_notes_created ON public.delivery_notes (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_delivery_notes_date ON public.delivery_notes (note_date);
+CREATE INDEX IF NOT EXISTS idx_delivery_notes_created ON public.delivery_notes (created_at DESC);
 
 -- 3. Kebijakan Keamanan RLS (Bug-Free)
 ALTER TABLE public.delivery_notes ENABLE ROW LEVEL SECURITY;
+
+-- Drop Policy lama jika butuh replace utuh (Opsional untuk clean update)
+DROP POLICY IF EXISTS "Membaca berita acara sesuai role" ON public.delivery_notes;
+DROP POLICY IF EXISTS "Bisa nambah berita acara" ON public.delivery_notes;
+DROP POLICY IF EXISTS "Admin bisa edit berita acara" ON public.delivery_notes;
+DROP POLICY IF EXISTS "Admin bisa hapus riwayat" ON public.delivery_notes;
 
 -- Admin bisa melihat semua Berita Acara, Staf hanya lihat miliknya sendiri
 CREATE POLICY "Membaca berita acara sesuai role" 

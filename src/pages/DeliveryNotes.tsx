@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
-import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database } from 'lucide-react';
+import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database, Image as ImageIcon } from 'lucide-react';
 import DeliveryNoteModal from '../components/DeliveryNoteModal';
 import { generateDeliveryNotePDF } from '../utils/pdfGenerator';
 
@@ -15,6 +15,7 @@ interface DeliveryNote {
     created_at: string;
     sender_address: string;
     courier_name: string | null;
+    photo_data?: string | null;
 }
 
 export default function DeliveryNotes() {
@@ -195,6 +196,11 @@ export default function DeliveryNotes() {
                                         </td>
                                         <td>
                                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                                {note.photo_data && (
+                                                    <a href={note.photo_data} download={`Bukti_Fisik_${note.expedition}_${dayjs(note.note_date).format('DD_MMM_YYYY')}.jpg`} className="btn btn-outline" style={{ padding: '0.4rem', color: '#f59e0b', borderColor: '#fde68a', background: '#fffbeb' }} title="Download Foto Bukti">
+                                                        <ImageIcon size={18} />
+                                                    </a>
+                                                )}
                                                 <button onClick={() => handlePrint(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#10b981', borderColor: '#a7f3d0', background: '#ecfdf5' }} title="Cetak Langsung">
                                                     <Printer size={18} />
                                                 </button>
