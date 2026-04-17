@@ -13,6 +13,8 @@
     "@supabase/supabase-js": "^2.100.0",
     "dayjs": "^1.11.20",
     "html5-qrcode": "^2.3.8",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "lucide-react": "^1.0.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

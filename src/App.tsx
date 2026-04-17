@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Scan from './pages/Scan';
 import DataList from './pages/DataList';
 import ManageUsers from './pages/ManageUsers';
+import DeliveryNotes from './pages/DeliveryNotes';
 import Layout from './components/Layout';
 
 function App() {
@@ -86,6 +87,7 @@ function App() {
         >
           <Route index element={<Dashboard userRole={userRole} />} />
           <Route path="scan" element={<Scan />} />
+          <Route path="berita-acara" element={<DeliveryNotes />} />
 
           {/* HANYA Admin yang boleh akses Menu Super (Data Ekspor & Manage Karyawan) */}
           <Route path="data" element={userRole === 'admin' ? <DataList /> : <Navigate to="/scan" />} />

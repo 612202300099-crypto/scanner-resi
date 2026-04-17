@@ -54,6 +54,15 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
                         <span>Senjata Scan</span>
                     </NavLink>
 
+                    <NavLink
+                        to="/berita-acara"
+                        onClick={() => setIsSidebarOpen(false)}
+                        className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                    >
+                        <FileText size={20} />
+                        <span>Berita Acara</span>
+                    </NavLink>
+
                     {/* Pembatas untuk Admin Khusus */}
                     {userRole === 'admin' && (
                         <>
