@@ -97,15 +97,26 @@ export default function DeliveryNoteModal({ isOpen, onClose, onSuccess }: Delive
     // KAMERA ENGINE ========
     const startCamera = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            } catch (fallbackErr) {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
             }
+            
             streamRef.current = stream;
             setIsCameraActive(true);
             setPhotoBase64(null);
+            
+            // Tunggu DOM selesai nge-render elemen <video> lalu pasang sumbernya
+            setTimeout(() => {
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    videoRef.current.play().catch(e => console.error("Video play blocked:", e));
+                }
+            }, 250);
         } catch (err: any) {
-            alert('Akses Kamera Terblokir atau Tidak Ditemukan: ' + err.message);
+            alert('Akses Kamera Terblokir/Tidak Ditemukan. Pastikan link diawali HTTPS. Error: ' + err.message);
         }
     };
 
