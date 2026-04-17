@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
-import { FileText, Plus, Search, Trash2, Printer, Download, RefreshCw, Database } from 'lucide-react';
+import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database } from 'lucide-react';
 import DeliveryNoteModal from '../components/DeliveryNoteModal';
 import { generateDeliveryNotePDF } from '../utils/pdfGenerator';
 
@@ -172,7 +172,7 @@ export default function DeliveryNotes() {
                                         </td>
                                         <td>
                                             <div style={{ fontWeight: 800, color: 'var(--primary)' }}>{note.sender_name}</div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }} className="truncate" style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <div className="truncate" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {note.sender_address}
                                             </div>
                                         </td>

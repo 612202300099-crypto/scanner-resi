@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
 import { X, Search, CheckSquare, Square, RefreshCw, AlertCircle } from 'lucide-react';
