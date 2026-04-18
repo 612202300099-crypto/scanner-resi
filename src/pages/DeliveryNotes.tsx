@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
-import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database, Image as ImageIcon } from 'lucide-react';
+import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database, Image as ImageIcon, Camera } from 'lucide-react';
 import DeliveryNoteModal from '../components/DeliveryNoteModal';
 import { generateDeliveryNotePDF } from '../utils/pdfGenerator';
 
@@ -24,6 +24,10 @@ export default function DeliveryNotes() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     
+    // State untuk Update Foto Susulan
+    const [editNoteId, setEditNoteId] = useState<string | null>(null);
+    const [editInitialData, setEditInitialData] = useState<any>(null);
+
     // User Role Check untuk tombol hapus
     const [isAdmin, setIsAdmin] = useState(false);
 
@@ -98,54 +102,93 @@ export default function DeliveryNotes() {
         }, 'download');
     };
 
+    const openAddPhotoModal = (note: DeliveryNote) => {
+        setEditNoteId(note.id);
+        setEditInitialData({
+            sender_name: note.sender_name,
+            sender_address: note.sender_address,
+            expedition: note.expedition,
+            courier_name: note.courier_name,
+            note_date: note.note_date,
+            items: note.items
+        });
+        setIsModalOpen(true);
+    };
+
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
-                <h1 className="page-title" style={{ margin: 0 }}>Arsip Berita Acara</h1>
+        <div style={{ padding: '0 0.5rem' }}>
+            <style>{`
+                @media (max-width: 640px) {
+                    .page-header {
+                        flex-direction: column;
+                        align-items: stretch !important;
+                    }
+                    .btn-create {
+                        width: 100%;
+                        justify-content: center;
+                    }
+                    .table-container {
+                        margin-bottom: 2rem;
+                    }
+                    .hide-on-mobile {
+                        display: none !important;
+                    }
+                    .status-badge {
+                        font-size: 0.7rem !important;
+                        padding: 0.2rem 0.4rem !important;
+                    }
+                }
+            `}</style>
+
+            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div>
+                    <h1 className="page-title" style={{ margin: 0, fontSize: 'clamp(1.25rem, 5vw, 1.75rem)' }}>Arsip Berita Acara</h1>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Kelola bukti penyerahan fisik & digital.</p>
+                </div>
                 <button 
-                    onClick={() => setIsModalOpen(true)}
-                    className="btn btn-primary" 
-                    style={{ padding: '0.75rem 1.5rem', fontWeight: 800 }}
+                    onClick={() => { setEditNoteId(null); setEditInitialData(null); setIsModalOpen(true); }}
+                    className="btn btn-primary btn-create" 
+                    style={{ padding: '0.75rem 1.5rem', fontWeight: 800, boxShadow: '0 4px 12px rgba(var(--primary-rgb), 0.3)' }}
                 >
-                    <Plus size={20} /> Buat Berita Acara
+                    <Plus size={20} /> Buat Baru
                 </button>
             </div>
 
-            <div className="card" style={{ marginBottom: '1.5rem', borderTop: '4px solid var(--primary)' }}>
-                <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    <div style={{ flex: '1 1 300px', display: 'flex', position: 'relative' }}>
+            <div className="card" style={{ marginBottom: '1rem', borderTop: '4px solid var(--primary)', padding: '1rem' }}>
+                <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    <div style={{ flex: '1 1 200px', display: 'flex', position: 'relative' }}>
                         <input
                             type="text"
                             className="input"
-                            placeholder="Cari berdasarkan Nama Pengirim atau Ekspedisi..."
+                            placeholder="Cari pengirim/ekspedisi..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{ paddingLeft: '2.5rem', border: '2px solid var(--border)' }}
+                            style={{ paddingLeft: '2.25rem', border: '2px solid var(--border)' }}
                         />
-                        <Search size={20} color="var(--text-muted)" style={{ position: 'absolute', top: '50%', left: '0.75rem', transform: 'translateY(-50%)' }} />
+                        <Search size={18} color="var(--text-muted)" style={{ position: 'absolute', top: '50%', left: '0.75rem', transform: 'translateY(-50%)' }} />
                     </div>
                     <button type="submit" className="btn btn-outline" style={{ borderColor: 'var(--primary)', color: 'var(--primary)' }}>
-                        Filter Pencarian
+                        Cari
                     </button>
                     {searchQuery && (
                         <button type="button" onClick={() => { setSearchQuery(''); setTimeout(fetchNotes, 100); }} className="btn btn-outline">
-                            Reset
+                            Hapus
                         </button>
                     )}
                 </form>
             </div>
 
             <div className="card" style={{ padding: 0, overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                <div className="table-container" style={{ border: 'none' }}>
-                    <table style={{ minWidth: '800px' }}>
+                <div className="table-container" style={{ border: 'none', overflowX: 'auto' }}>
+                    <table style={{ minWidth: '850px', width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
                             <tr style={{ background: '#1e293b' }}>
-                                <th style={{ color: 'white' }}>Tanggal</th>
-                                <th style={{ color: 'white' }}>Pihak Pertama (Pengirim)</th>
-                                <th style={{ color: 'white' }}>Pihak Kedua (Ekspedisi)</th>
-                                <th style={{ color: 'white', textAlign: 'center' }}>Total Paket</th>
-                                <th style={{ color: 'white' }}>Pembuat Docs</th>
-                                <th style={{ color: 'white', textAlign: 'center' }}>Aksi Dokumen</th>
+                                <th style={{ color: 'white', padding: '1rem' }}>Tgl Dokumen</th>
+                                <th style={{ color: 'white', padding: '1rem' }}>Status Bukti</th>
+                                <th style={{ color: 'white', padding: '1rem' }}>Pengirim / Ekspedisi</th>
+                                <th className="hide-on-mobile" style={{ color: 'white', padding: '1rem', textAlign: 'center' }}>Total Resi</th>
+                                <th className="hide-on-mobile" style={{ color: 'white', padding: '1rem' }}>Admin</th>
+                                <th style={{ color: 'white', padding: '1rem', textAlign: 'center' }}>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,62 +196,70 @@ export default function DeliveryNotes() {
                                 <tr>
                                     <td colSpan={6} className="text-center" style={{ padding: '4rem', color: 'var(--text-muted)' }}>
                                         <RefreshCw className="animate-spin" size={40} style={{ margin: '0 auto 1rem', color: 'var(--primary)' }} />
-                                        Mencari Arsip...
+                                        Sinkronisasi...
                                     </td>
                                 </tr>
                             ) : notes.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="text-center" style={{ padding: '6rem 2rem', color: 'var(--text-muted)' }}>
-                                        <Database size={64} color="var(--border)" style={{ margin: '0 auto 1rem' }} />
-                                        <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>Belum Ada Berita Acara</h2>
-                                        <p>Klik tombol "Buat Berita Acara" di pojok kanan atas untuk memulainya.</p>
+                                        <Database size={54} color="var(--border)" style={{ margin: '0 auto 1rem', opacity: 0.5 }} />
+                                        <p>Belum ada data terekam.</p>
                                     </td>
                                 </tr>
                             ) : (
                                 notes.map((note) => (
                                     <tr key={note.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                                        <td style={{ fontWeight: 700 }}>
-                                            <div>{dayjs(note.note_date).format('DD MMM YYYY')}</div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 'normal' }}>Dibuat: {dayjs(note.created_at).format('HH:mm')}</div>
+                                        <td style={{ padding: '0.75rem 1rem' }}>
+                                            <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{dayjs(note.note_date).format('DD/MM/YY')}</div>
+                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ID: {note.id.split('-')[0]}</div>
                                         </td>
-                                        <td>
-                                            <div style={{ fontWeight: 800, color: 'var(--primary)' }}>{note.sender_name}</div>
-                                            <div className="truncate" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {note.sender_address}
-                                            </div>
+                                        <td style={{ padding: '0.75rem 1rem' }}>
+                                            {note.photo_data ? (
+                                                <span className="status-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#ecfdf5', color: '#065f46', border: '1px solid #10b981', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
+                                                    <ImageIcon size={12} /> ADA FOTO
+                                                </span>
+                                            ) : (
+                                                <span className="status-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#fff7ed', color: '#9a3412', border: '1px solid #f97316', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
+                                                    <Camera size={12} /> NO PHOTO
+                                                </span>
+                                            )}
                                         </td>
-                                        <td>
-                                            <div style={{ fontWeight: 800, color: 'var(--text-main)' }}>{note.expedition}</div>
-                                            {note.courier_name && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Kurir: {note.courier_name}</div>}
+                                        <td style={{ padding: '0.75rem 1rem' }}>
+                                            <div style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '0.9rem' }}>{note.sender_name}</div>
+                                            <div style={{ fontSize: '0.8rem', color: 'var(--text-main)', opacity: 0.8 }}>VIA: {note.expedition}</div>
+                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }} className="hide-on-mobile">{note.sender_address.substring(0, 30)}...</div>
                                         </td>
-                                        <td style={{ textAlign: 'center' }}>
-                                            <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', background: '#ecfdf5', color: '#047857', border: '1px solid #6ee7b7', borderRadius: '50px', fontWeight: 900 }}>
-                                                {note.items.length} Resi
-                                            </span>
+                                        <td className="hide-on-mobile" style={{ textAlign: 'center', padding: '0.75rem 1rem' }}>
+                                            <span style={{ fontWeight: 900, fontSize: '1rem' }}>{note.items.length}</span>
                                         </td>
-                                        <td>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#cbd5e1', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.7rem', fontWeight: 800 }}>
-                                                    {note.user_name.charAt(0).toUpperCase()}
-                                                </div>
-                                                <span style={{ fontSize: '0.85rem' }}>{note.user_name}</span>
-                                            </div>
+                                        <td className="hide-on-mobile" style={{ padding: '0.75rem 1rem' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{note.user_name}</span>
                                         </td>
-                                        <td>
-                                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                        <td style={{ padding: '0.75rem 1rem' }}>
+                                            <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                                {/* TOMBOL TAMBAH FOTO (JIKA KOSONG) */}
+                                                {!note.photo_data && (
+                                                    <button onClick={() => openAddPhotoModal(note)} className="btn btn-outline" style={{ padding: '0.4rem 0.6rem', color: '#ea580c', borderColor: '#fdba74', background: '#fff7ed' }} title="Lengkapi Foto">
+                                                        <Camera size={16} /> <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>FOTO</span>
+                                                    </button>
+                                                )}
+                                                
                                                 {note.photo_data && (
-                                                    <a href={note.photo_data} download={`Bukti_Fisik_${note.expedition}_${dayjs(note.note_date).format('DD_MMM_YYYY')}.jpg`} className="btn btn-outline" style={{ padding: '0.4rem', color: '#f59e0b', borderColor: '#fde68a', background: '#fffbeb' }} title="Download Foto Bukti">
+                                                    <a href={note.photo_data} download={`Foto_${note.expedition}_${note.note_date}.jpg`} className="btn btn-outline" style={{ padding: '0.4rem', color: '#f59e0b', borderColor: '#fde68a', background: '#fffbeb' }} title="Download Foto">
                                                         <ImageIcon size={18} />
                                                     </a>
                                                 )}
-                                                <button onClick={() => handlePrint(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#10b981', borderColor: '#a7f3d0', background: '#ecfdf5' }} title="Cetak Langsung">
+                                                
+                                                <button onClick={() => handlePrint(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#10b981', borderColor: '#a7f3d0' }} title="Cetak">
                                                     <Printer size={18} />
                                                 </button>
-                                                <button onClick={() => handleDownload(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#0ea5e9', borderColor: '#bae6fd', background: '#f0f9ff' }} title="Download PDF">
+                                                
+                                                <button onClick={() => handleDownload(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#0ea5e9', borderColor: '#bae6fd' }} title="PDF">
                                                     <Download size={18} />
                                                 </button>
+
                                                 {isAdmin && (
-                                                    <button onClick={() => handleDelete(note.id, note.sender_name)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#ef4444', borderColor: '#fca5a5', background: '#fef2f2' }} title="Hapus Dokumen (Admin)">
+                                                    <button onClick={() => handleDelete(note.id, note.sender_name)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#ef4444', borderColor: '#fca5a5' }} title="Hapus">
                                                         <Trash2 size={18} />
                                                     </button>
                                                 )}
@@ -220,18 +271,19 @@ export default function DeliveryNotes() {
                         </tbody>
                     </table>
                 </div>
-                <div style={{ padding: '1rem', borderTop: '1px solid var(--border)', background: '#f8fafc', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Menampilkan total {notes.length} dokumen.
-                </div>
             </div>
 
             <DeliveryNoteModal 
                 isOpen={isModalOpen} 
-                onClose={() => setIsModalOpen(false)} 
+                onClose={() => { setIsModalOpen(false); setEditNoteId(null); setEditInitialData(null); }} 
                 onSuccess={() => {
                     setIsModalOpen(false);
+                    setEditNoteId(null);
+                    setEditInitialData(null);
                     fetchNotes();
                 }}
+                editId={editNoteId}
+                initialData={editInitialData}
             />
         </div>
     );
