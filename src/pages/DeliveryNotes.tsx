@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
-import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database, Image as ImageIcon, Camera } from 'lucide-react';
+import { Plus, Search, Trash2, Printer, Download, RefreshCw, Database, Image as ImageIcon, Camera, Eye, Lock } from 'lucide-react';
 import DeliveryNoteModal from '../components/DeliveryNoteModal';
+import DetailPreview from '../components/DetailPreview';
 import { generateDeliveryNotePDF } from '../utils/pdfGenerator';
 
 interface DeliveryNote {
@@ -16,6 +17,8 @@ interface DeliveryNote {
     sender_address: string;
     courier_name: string | null;
     photo_data?: string | null;
+    is_finalized?: boolean;
+    photo_source?: 'camera' | 'gallery';
 }
 
 export default function DeliveryNotes() {
@@ -27,6 +30,11 @@ export default function DeliveryNotes() {
     // State untuk Update Foto Susulan
     const [editNoteId, setEditNoteId] = useState<string | null>(null);
     const [editInitialData, setEditInitialData] = useState<any>(null);
+
+    // State untuk Detail Preview
+    const [previewNote, setPreviewNote] = useState<DeliveryNote | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [finalizingId, setFinalizingId] = useState<string | null>(null);
 
     // User Role Check untuk tombol hapus
     const [isAdmin, setIsAdmin] = useState(false);
@@ -110,9 +118,39 @@ export default function DeliveryNotes() {
             expedition: note.expedition,
             courier_name: note.courier_name,
             note_date: note.note_date,
-            items: note.items
+            items: note.items,
+            photo_data: note.photo_data,
+            is_finalized: note.is_finalized,
         });
         setIsModalOpen(true);
+    };
+
+    const handlePreviewClick = (note: DeliveryNote) => {
+        setPreviewNote(note);
+        setShowPreview(true);
+    };
+
+    const handleFinalize = async () => {
+        if (!previewNote?.id) return;
+        
+        setFinalizingId(previewNote.id);
+        try {
+            const { error } = await supabase
+                .from('delivery_notes')
+                .update({ is_finalized: true })
+                .eq('id', previewNote.id);
+
+            if (error) throw error;
+
+            // Update preview state
+            setPreviewNote({ ...previewNote, is_finalized: true });
+            fetchNotes(); // Refresh list
+        } catch (error: any) {
+            console.error('Error finalizing:', error);
+            alert('Gagal mem-finalisasi: ' + error.message);
+        } finally {
+            setFinalizingId(null);
+        }
     };
 
     return (
@@ -214,15 +252,22 @@ export default function DeliveryNotes() {
                                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>ID: {note.id.split('-')[0]}</div>
                                         </td>
                                         <td style={{ padding: '0.75rem 1rem' }}>
-                                            {note.photo_data ? (
-                                                <span className="status-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#ecfdf5', color: '#065f46', border: '1px solid #10b981', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
-                                                    <ImageIcon size={12} /> ADA FOTO
-                                                </span>
-                                            ) : (
-                                                <span className="status-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#fff7ed', color: '#9a3412', border: '1px solid #f97316', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
-                                                    <Camera size={12} /> NO PHOTO
-                                                </span>
-                                            )}
+                                            <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                                                {note.is_finalized && (
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#dcfce7', color: '#166534', border: '1px solid #86efac', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
+                                                        <Lock size={12} /> LOCKED
+                                                    </span>
+                                                )}
+                                                {note.photo_data ? (
+                                                    <span className="status-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#ecfdf5', color: '#065f46', border: '1px solid #10b981', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
+                                                        <ImageIcon size={12} /> ADA FOTO
+                                                    </span>
+                                                ) : (
+                                                    <span className="status-badge" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', padding: '0.25rem 0.5rem', background: '#fff7ed', color: '#9a3412', border: '1px solid #f97316', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 800 }}>
+                                                        <Camera size={12} /> NO PHOTO
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
                                         <td style={{ padding: '0.75rem 1rem' }}>
                                             <div style={{ fontWeight: 800, color: 'var(--primary)', fontSize: '0.9rem' }}>{note.sender_name}</div>
@@ -237,10 +282,22 @@ export default function DeliveryNotes() {
                                         </td>
                                         <td style={{ padding: '0.75rem 1rem' }}>
                                             <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                                                {/* TOMBOL TAMBAH FOTO (JIKA KOSONG) */}
-                                                {!note.photo_data && (
+                                                {/* BUTTON PREVIEW DETAIL */}
+                                                <button onClick={() => handlePreviewClick(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#7c3aed', borderColor: '#d8b4fe', background: '#f5f3ff' }} title="Preview Detail">
+                                                    <Eye size={16} />
+                                                </button>
+
+                                                {/* TOMBOL TAMBAH FOTO (JIKA KOSONG DAN BELUM FINALIZED) */}
+                                                {!note.photo_data && !note.is_finalized && (
                                                     <button onClick={() => openAddPhotoModal(note)} className="btn btn-outline" style={{ padding: '0.4rem 0.6rem', color: '#ea580c', borderColor: '#fdba74', background: '#fff7ed' }} title="Lengkapi Foto">
                                                         <Camera size={16} /> <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>FOTO</span>
+                                                    </button>
+                                                )}
+                                                
+                                                {/* TOMBOL EDIT FOTO (JIKA ADA FOTO DAN BELUM FINALIZED) */}
+                                                {note.photo_data && !note.is_finalized && (
+                                                    <button onClick={() => openAddPhotoModal(note)} className="btn btn-outline" style={{ padding: '0.4rem 0.6rem', color: '#0ea5e9', borderColor: '#7dd3fc', background: '#f0f9ff' }} title="Edit Foto">
+                                                        <Camera size={16} /> <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>EDIT</span>
                                                     </button>
                                                 )}
                                                 
@@ -254,11 +311,11 @@ export default function DeliveryNotes() {
                                                     <Printer size={18} />
                                                 </button>
                                                 
-                                                <button onClick={() => handleDownload(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#0ea5e9', borderColor: '#bae6fd' }} title="PDF">
+                                                <button onClick={() => handleDownload(note)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#10b981', borderColor: '#a7f3d0' }} title="PDF">
                                                     <Download size={18} />
                                                 </button>
 
-                                                {isAdmin && (
+                                                {isAdmin && !note.is_finalized && (
                                                     <button onClick={() => handleDelete(note.id, note.sender_name)} className="btn btn-outline" style={{ padding: '0.4rem', color: '#ef4444', borderColor: '#fca5a5' }} title="Hapus">
                                                         <Trash2 size={18} />
                                                     </button>
@@ -285,6 +342,19 @@ export default function DeliveryNotes() {
                 editId={editNoteId}
                 initialData={editInitialData}
             />
+
+            {showPreview && previewNote && (
+                <DetailPreview
+                    note={previewNote}
+                    onClose={() => setShowPreview(false)}
+                    onEdit={() => {
+                        setShowPreview(false);
+                        openAddPhotoModal(previewNote);
+                    }}
+                    onFinalize={handleFinalize}
+                    isFinalizing={finalizingId === previewNote.id}
+                />
+            )}
         </div>
     );
 }

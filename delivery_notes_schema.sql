@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS public.delivery_notes (
 -- UPDATE V2: Menambahkan kolom penampungan gambar base64
 ALTER TABLE public.delivery_notes ADD COLUMN IF NOT EXISTS photo_data text;
 
+-- UPDATE V3: Fitur edit + lock + photo source tracking
+ALTER TABLE public.delivery_notes ADD COLUMN IF NOT EXISTS is_finalized boolean DEFAULT false;
+ALTER TABLE public.delivery_notes ADD COLUMN IF NOT EXISTS photo_source text DEFAULT 'camera';
+ALTER TABLE public.delivery_notes ADD COLUMN IF NOT EXISTS updated_at timestamp with time zone DEFAULT now();
+
 -- 2. Optimasi Pencarian
 CREATE INDEX IF NOT EXISTS idx_delivery_notes_date ON public.delivery_notes (note_date);
 CREATE INDEX IF NOT EXISTS idx_delivery_notes_created ON public.delivery_notes (created_at DESC);
@@ -48,11 +53,18 @@ TO authenticated
 WITH CHECK (auth.uid() = user_id);
 
 -- HANYA Admin yang berhak memodifikasi, walau staf seringkali tak perlu
+-- PERUBAHAN: Tidak bisa edit jika sudah di-finalize
 CREATE POLICY "Admin bisa edit berita acara" 
 ON public.delivery_notes FOR UPDATE 
 TO authenticated 
-USING (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'))
-WITH CHECK (EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin'));
+USING (
+  EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin')
+  AND NOT is_finalized
+)
+WITH CHECK (
+  EXISTS (SELECT 1 FROM public.user_roles ur WHERE ur.user_id = auth.uid() AND ur.role = 'admin')
+  AND NOT is_finalized
+);
 
 -- HANYA Admin yang berhak menghapus berkas arsip salah
 CREATE POLICY "Admin bisa hapus riwayat" 
