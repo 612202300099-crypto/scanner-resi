@@ -66,7 +66,8 @@ for page in range(1, 8):
                     "total_price": o.get("totalPrice", 0),
                     "cod_order": o.get("paymentMethod") in ("Cash on delivery", "COD"),
                     "delivery_deadline": time.strftime('%Y-%m-%dT%H:%M:%S+07:00', time.localtime(dl/1000)) if (dl := o.get("deliveryDeadline")) else None,
-                    "order_create_time": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(ts/1000)) if ts else None}
+                    "order_create_time": time.strftime('%Y-%m-%dT%H:%M:%S+07:00', time.localtime(ts/1000)) if ts else None,
+                    "order_date_wib": time.strftime('%Y-%m-%d', time.localtime(ts/1000)) if ts else None}
 
                 if did in existing_ids:
                     check_res = safe_req(f"{SUPABASE_URL}/rest/v1/orders?desty_order_id=eq.{urllib.request.quote(did, safe='')}&select=id")

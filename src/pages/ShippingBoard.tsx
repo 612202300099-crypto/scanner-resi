@@ -33,8 +33,8 @@ export default function ShippingBoard() {
 
       // Orders with date filter
       let q = supabase.from('orders').select('*').eq('order_status', 'Processed');
-      if (dateFrom) q = q.gte('order_create_time', dateFrom);
-      if (dateTo) q = q.lte('order_create_time', dateTo + 'T23:59:59');
+      if (dateFrom) q = q.gte('order_date_wib', dateFrom);
+      if (dateTo) q = q.lte('order_date_wib', dateTo);
       const { data: ord } = await q.order('order_create_time', { ascending: false });
       setOrders(ord || []);
 
