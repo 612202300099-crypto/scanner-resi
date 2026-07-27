@@ -22,7 +22,8 @@ interface OrderRow {
   order_status: string; customer_name: string;
   shipping_city: string; shipping_address: string;
   total_price: number; cod_order: boolean;
-  order_create_time: string; items: ItemRow[];
+  order_create_time: string; delivery_deadline: string|null;
+  items: ItemRow[];
 }
 interface ItemRow {
   id: string; order_id: string; item_name: string; quantity: number;
@@ -44,6 +45,9 @@ export default function ShippingBoard() {
   const [page, setPage] = useState(0);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+
+  const todayStart = dayjs().startOf('day');
+  const now = dayjs();
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -134,6 +138,12 @@ export default function ShippingBoard() {
       <CC icon={<Truck size={18}/>} label="Scan Kurir" value={destyCounts?.in_delivery??'...'} color="#0ea5e9" sub="In Delivery"/>
       <CC icon={<Home size={18}/>} label="Diterima" value={destyCounts?.delivered??'...'} color="#8b5cf6" sub="Delivered"/>
       <CC icon={<Hash size={18}/>} label="Total Shipping" value={destyCounts?.shipping??'...'} color="#64748b" sub="All time"/>
+    </div>
+
+    {/* DEADLINE CARDS */}
+    <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:'0.5rem',marginBottom:'1.5rem'}}>
+      <CC icon={<Clock size={18}/>} label="Deadline Hari Ini" value={allOrders.filter(o=>{const d=dayjs(o.delivery_deadline);return d.isValid()&&d.isSame(todayStart,'day');}).length} color="#f59e0b" sub="Harus dikirim hari ini"/>
+      <CC icon={<AlertCircle size={18}/>} label="Terlambat" value={allOrders.filter(o=>{const d=dayjs(o.delivery_deadline);return d.isValid()&&d.isBefore(now);}).length} color="var(--danger)" sub="Melebihi deadline"/>
     </div>
 
     {/* PROGRESS BAR */}
