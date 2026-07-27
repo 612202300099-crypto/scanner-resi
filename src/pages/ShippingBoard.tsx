@@ -52,9 +52,15 @@ export default function ShippingBoard() {
       const { data: dc } = await supabase.from('desty_counts').select('*').eq('id', 1).maybeSingle();
       if (dc) setDestyCounts(dc);
 
-      // Scanned resis
-      const { data: scans } = await supabase.from('scans').select('resi').eq('status', 'KELUAR');
-      const ss = new Set<string>(); (scans||[]).forEach(s=>{if(s.resi)ss.add(s.resi.trim().toUpperCase());});
+      // Scanned resis (paginated — load all 19k+)
+      const ss = new Set<string>();
+      let off = 0;
+      while (true) {
+        const { data: scans } = await supabase.from('scans').select('resi').eq('status', 'KELUAR').range(off, off + 999);
+        if (!scans || scans.length === 0) break;
+        scans.forEach((s:any)=>{if(s.resi)ss.add(s.resi.trim().toUpperCase());});
+        off += 1000;
+      }
       setScannedResis(ss);
 
       // Orders with optional date filter
