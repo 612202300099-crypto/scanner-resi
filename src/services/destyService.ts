@@ -162,18 +162,33 @@ export async function matchScanToOrderItem(
   orderItem: ShippingOrderItem;
   order: ShippingOrder;
 } | null> {
-  const { data: item, error } = await supabase
+  // Try exact match first, then case-insensitive
+  const { data: items, error } = await supabase
     .from('order_items')
     .select('*, orders(*)')
-    .eq('tracking_number', trackingNumber)
-    .eq('is_shipped', false)
-    .single();
+    .or(`tracking_number.eq.${trackingNumber},tracking_number.ilike.${trackingNumber}`)
+    .order('created_at', { ascending: false })
+    .limit(1);
 
-  if (error || !item) return null;
+  if (error || !items || items.length === 0) {
+    // Fallback: search by case-insensitive
+    const { data: items2 } = await supabase
+      .from('order_items')
+      .select('*, orders(*)')
+      .ilike('tracking_number', `%${trackingNumber}%`)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    
+    if (!items2 || items2.length === 0) return null;
+    return {
+      orderItem: items2[0] as unknown as ShippingOrderItem,
+      order: (items2[0] as unknown as { orders: ShippingOrder }).orders,
+    };
+  }
 
   return {
-    orderItem: item as unknown as ShippingOrderItem,
-    order: (item as unknown as { orders: ShippingOrder }).orders,
+    orderItem: items[0] as unknown as ShippingOrderItem,
+    order: (items[0] as unknown as { orders: ShippingOrder }).orders,
   };
 }
 
