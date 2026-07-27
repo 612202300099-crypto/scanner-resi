@@ -30,7 +30,7 @@ export default function DestySettings() {
             <tr><td style={{ padding: '0.5rem', fontWeight: 700 }}>Sumber</td><td>omni.desty.app/api/order-center</td></tr>
             <tr><td style={{ padding: '0.5rem', fontWeight: 700 }}>Target</td><td>Supabase Production (zervdttmbpenbujkjcrn)</td></tr>
             <tr><td style={{ padding: '0.5rem', fontWeight: 700 }}>Data</td><td>Order Processed (Telah Diproses) + items + resi</td></tr>
-            <tr><td style={{ padding: '0.5rem', fontWeight: 700 }}>Status</td><td><span style={{ color: 'var(--success)', fontWeight: 700 }}>● Running</span> (Windows Task Scheduler)</td></tr>
+            <tr><td style={{ padding: '0.5rem', fontWeight: 700 }}>Status</td><td><span style={{ color: 'var(--success)', fontWeight: 700 }}>● Aktif</span> — Windows Task Scheduler (tiap 2 menit)</td></tr>
           </tbody>
         </table>
       </div>
