@@ -578,3 +578,5 @@ Synced 50 orders out of 50 fetched
 Synced 50 orders out of 50 fetched
 Synced 50 orders out of 50 fetched
 Synced 50 orders out of 50 fetched
+^CSynced 50 orders out of 50 fetched
+^CSynced 50 orders out of 50 fetched
