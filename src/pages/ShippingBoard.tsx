@@ -43,12 +43,16 @@ export default function ShippingBoard() {
       const { data: dc } = await supabase.from('desty_counts').select('*').eq('id', 1).maybeSingle();
       if (dc) setDestyCounts(dc);
       const ssAll = new Set<string>();
-      let off = 0;
-      while (true) {
-        const { data: scans } = await supabase.from('scans').select('resi,created_at').eq('status', 'KELUAR').range(off, off+999);
-        if (!scans || scans.length===0) break;
-        scans.forEach((s:any)=>{ if(s.resi){ const r=s.resi.trim().toUpperCase(); ssAll.add(r); }});
-        off += 1000;
+      // Query scans matching ANY order tracking number (efficient, no pagination needed)
+      const tns = new Set<string>();
+      const { data: allTns } = await supabase.from('order_items').select('tracking_number').eq('order_status', 'Processed').not('tracking_number','is',null);
+      (allTns||[]).forEach((i:any)=>{if(i.tracking_number)tns.add(i.tracking_number.trim().toUpperCase());});
+      // Batch query: check which tracking numbers have KELUAR scans
+      const tnArray = [...tns];
+      for (let i=0; i<tnArray.length; i+=100) {
+        const batch = tnArray.slice(i, i+100);
+        const { data: matched } = await supabase.from('scans').select('resi').eq('status','KELUAR').in('resi', batch);
+        (matched||[]).forEach((s:any)=>{if(s.resi)ssAll.add(s.resi.trim().toUpperCase());});
       }
       setScannedResisAll(ssAll);
       let q = supabase.from('orders').select('*').eq('order_status','Processed');
