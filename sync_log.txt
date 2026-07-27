@@ -814,3 +814,104 @@ KeyboardInterrupt
 [16:34:01] Counts: ready=317, processed=297, toProcess=20
 [16:34:20] Page 1 error: Expecting value: line 1 column 1 (char 0)
 [16:34:20] Done! New: 0, Updated: 23
+[16:36:01] Starting Desty sync...
+[16:36:01] Counts: ready=317, processed=297, toProcess=20
+[16:37:21] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:37:21] Done! New: 0, Updated: 10
+[16:38:00] Starting Desty sync...
+[16:38:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:38:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:38:00] Done! New: 0, Updated: 0
+[16:40:00] Starting Desty sync...
+[16:40:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:40:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:40:00] Done! New: 0, Updated: 0
+[16:42:00] Starting Desty sync...
+[16:42:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:42:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:42:00] Done! New: 0, Updated: 0
+[16:44:00] Starting Desty sync...
+[16:44:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:44:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:44:00] Done! New: 0, Updated: 0
+[16:46:00] Starting Desty sync...
+[16:46:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:46:01] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:46:01] Done! New: 0, Updated: 0
+[16:48:00] Starting Desty sync...
+[16:48:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:48:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:48:00] Done! New: 0, Updated: 0
+[16:50:00] Starting Desty sync...
+[16:50:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:50:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:50:00] Done! New: 0, Updated: 0
+[16:52:00] Starting Desty sync...
+[16:52:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:52:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:52:00] Done! New: 0, Updated: 0
+[16:54:00] Starting Desty sync...
+[16:54:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:54:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:54:00] Done! New: 0, Updated: 0
+[16:56:00] Starting Desty sync...
+[16:56:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:56:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:56:00] Done! New: 0, Updated: 0
+[16:58:00] Starting Desty sync...
+[16:58:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:58:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[16:58:00] Done! New: 0, Updated: 0
+[17:00:00] Starting Desty sync...
+[17:00:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:00:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:00:00] Done! New: 0, Updated: 0
+[17:02:00] Starting Desty sync...
+[17:02:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:02:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:02:00] Done! New: 0, Updated: 0
+[17:04:01] Starting Desty sync...
+[17:04:01] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:04:01] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:04:01] Done! New: 0, Updated: 0
+[17:06:00] Starting Desty sync...
+[17:06:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:06:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:06:00] Done! New: 0, Updated: 0
+[17:08:00] Starting Desty sync...
+[17:08:01] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:08:01] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:08:01] Done! New: 0, Updated: 0
+[17:10:00] Starting Desty sync...
+[17:10:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:10:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:10:00] Done! New: 0, Updated: 0
+[17:12:00] Starting Desty sync...
+[17:12:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:12:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:12:00] Done! New: 0, Updated: 0
+[17:14:00] Starting Desty sync...
+[17:14:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:14:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:14:00] Done! New: 0, Updated: 0
+[17:16:00] Starting Desty sync...
+[17:16:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:16:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:16:00] Done! New: 0, Updated: 0
+[17:18:00] Starting Desty sync...
+[17:18:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:18:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:18:00] Done! New: 0, Updated: 0
+[17:20:00] Starting Desty sync...
+[17:20:00] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:20:00] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[17:20:00] Done! New: 0, Updated: 0
+[17:24:01] Starting Desty sync...
+[17:24:01] Counts: ready=335, processed=333, toProcess=2
+[17:24:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[17:24:02] Done! New: 0, Updated: 0
+[17:28:01] Starting Desty sync...
+[17:28:01] Counts: ready=335, processed=335, toProcess=0
+[17:28:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[17:28:02] Done! New: 0, Updated: 0
+^C^C

@@ -169,6 +169,9 @@ export default function ShippingBoard() {
       </div>
     </div>}
 
+    {/* PER TOKO — DEADLINE */}
+    {(()=>{const dStores:Record<string,{total:number;today:number;late:number}>= {};allOrders.forEach(o=>{const s=o.store_name||'?';if(!dStores[s])dStores[s]={total:0,today:0,late:0};dStores[s].total++;if(o.delivery_deadline){const d=dayjs(o.delivery_deadline);if(d.isValid()&&d.isBefore(now))dStores[s].late++;if(d.isValid()&&d.isSame(todayStart,'day'))dStores[s].today++;}});const dl=Object.entries(dStores).sort((a,b)=>b[1].today+b[1].late-a[1].today-a[1].late);return dl.length>0?<div className="card" style={{marginBottom:'1.5rem',padding:'1rem'}}><div style={{fontWeight:800,fontSize:'0.9rem',marginBottom:'0.75rem'}}>⏰ Deadline Per Toko</div><div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))',gap:'0.4rem'}}>{dl.map(([n,d])=><div key={n} style={{padding:'0.5rem 0.6rem',background:'#f8fafc',borderRadius:'6px',border:'1px solid var(--border)',display:'flex',justifyContent:'space-between',alignItems:'center',gap:'0.4rem'}}><div style={{flex:1,minWidth:0}}><div style={{fontWeight:700,fontSize:'0.78rem'}}>{n}</div><div style={{fontSize:'0.68rem',color:'var(--text-muted)'}}>{d.total} order</div></div><div style={{display:'flex',gap:'0.3rem',fontSize:'0.72rem',fontWeight:700}}><span style={{color:'#92400e',background:'#fef3c7',padding:'0.15rem 0.4rem',borderRadius:'4px'}}>🟡{d.today}</span><span style={{color:'#dc2626',background:'#fef2f2',padding:'0.15rem 0.4rem',borderRadius:'4px'}}>🔴{d.late}</span></div></div>)}</div></div>:null;})()}
+
     {/* PER PRODUK */}
     {productBreakdown.length>0&&<div className="card" style={{marginBottom:'1.5rem',padding:'1rem'}}>
       <div style={{fontWeight:800,fontSize:'0.9rem',marginBottom:'0.75rem'}}>📦 Per Produk ({productBreakdown.length})</div>
