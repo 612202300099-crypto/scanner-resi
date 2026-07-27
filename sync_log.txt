@@ -714,3 +714,87 @@ KeyboardInterrupt
 [12:44:00] Counts: ready=300, processed=282, toProcess=18
 [12:45:08] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [12:45:08] Done! New: 0, Updated: 97
+^C[13:50:21] Starting Desty sync...
+[13:50:21] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[13:50:21] Page 1 error: <urlopen error [Errno 11001] getaddrinfo failed>
+[13:50:21] Done! New: 0, Updated: 0
+^C[13:56:00] Starting Desty sync...
+[13:56:01] Counts: ready=305, processed=301, toProcess=4
+[13:56:01] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[13:56:01] Done! New: 0, Updated: 0
+[14:00:00] Starting Desty sync...
+[14:00:01] Counts: ready=305, processed=301, toProcess=4
+[14:00:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:00:02] Done! New: 0, Updated: 1
+^C[14:04:01] Starting Desty sync...
+[14:04:01] Counts: ready=307, processed=301, toProcess=6
+[14:04:03] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:04:03] Done! New: 0, Updated: 2
+[14:06:00] Starting Desty sync...
+[14:06:01] Counts: ready=307, processed=301, toProcess=6
+[14:06:03] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:06:03] Done! New: 0, Updated: 3
+^C^C^C^C^C[14:22:00] Starting Desty sync...
+[14:22:01] Counts: ready=309, processed=302, toProcess=7
+[14:22:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:22:02] Done! New: 0, Updated: 0
+^C^C[14:28:00] Starting Desty sync...
+[14:28:01] Counts: ready=309, processed=302, toProcess=7
+[14:28:05] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:28:05] Done! New: 0, Updated: 5
+^C^C^C[14:36:01] Starting Desty sync...
+[14:36:13] Counts sync failed: <urlopen error [Errno 11001] getaddrinfo failed>
+[14:36:18] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:36:18] Done! New: 0, Updated: 6
+[14:38:00] Starting Desty sync...
+[14:38:01] Counts: ready=305, processed=299, toProcess=6
+[14:38:01] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:38:01] Done! New: 0, Updated: 0
+^C^C^C[14:46:00] Starting Desty sync...
+[14:46:01] Counts: ready=306, processed=299, toProcess=7
+[14:46:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:46:02] Done! New: 0, Updated: 1
+^C^C[14:52:01] Starting Desty sync...
+[14:52:01] Counts: ready=307, processed=299, toProcess=8
+[14:52:08] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:52:08] Done! New: 0, Updated: 9
+[14:56:01] Starting Desty sync...
+[14:56:01] Counts: ready=307, processed=299, toProcess=8
+[14:56:09] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[14:56:09] Done! New: 0, Updated: 10
+[15:00:01] Starting Desty sync...
+[15:00:01] Counts: ready=307, processed=299, toProcess=8
+[15:00:10] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:00:10] Done! New: 0, Updated: 11
+[15:02:00] Starting Desty sync...
+[15:02:01] Counts: ready=307, processed=299, toProcess=8
+[15:02:10] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:02:10] Done! New: 0, Updated: 12
+^C^C[15:08:01] Starting Desty sync...
+[15:08:02] Counts: ready=308, processed=299, toProcess=9
+[15:08:13] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:08:13] Done! New: 0, Updated: 13
+^C[15:12:02] Starting Desty sync...
+[15:12:03] Counts: ready=308, processed=299, toProcess=9
+[15:12:14] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:12:14] Done! New: 0, Updated: 14
+^C^C^C^C[15:30:01] Starting Desty sync...
+[15:30:01] Counts: ready=313, processed=299, toProcess=14
+[15:30:14] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:30:14] Done! New: 0, Updated: 15
+[15:32:01] Starting Desty sync...
+[15:32:01] Counts: ready=313, processed=299, toProcess=14
+[15:32:15] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:32:15] Done! New: 0, Updated: 16
+^C[15:40:01] Starting Desty sync...
+[15:40:01] Counts: ready=313, processed=299, toProcess=14
+[15:40:15] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:40:15] Done! New: 0, Updated: 17
+^C^C^C^C^C[15:52:00] Starting Desty sync...
+[15:52:01] Counts: ready=316, processed=299, toProcess=17
+[15:52:14] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[15:52:14] Done! New: 0, Updated: 18
+^C^C^C^C^C^C^C^C^C^C[16:20:03] Starting Desty sync...
+[16:20:04] Counts: ready=318, processed=297, toProcess=21
+[16:20:25] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[16:20:25] Done! New: 0, Updated: 19
