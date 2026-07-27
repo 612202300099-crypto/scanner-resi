@@ -182,13 +182,12 @@ export async function matchScanToOrderItem(
  */
 export async function markItemAsShipped(
   itemId: string,
-  scanId: string
+  _scanId: string
 ): Promise<boolean> {
   const { error } = await supabase
     .from('order_items')
     .update({
       is_shipped: true,
-      scan_id: scanId,
       updated_at: new Date().toISOString(),
     })
     .eq('id', itemId);

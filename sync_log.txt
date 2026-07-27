@@ -686,4 +686,24 @@ KeyboardInterrupt
 [12:06:00] Counts: ready=292, processed=283, toProcess=9
 [12:07:02] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [12:07:02] Done! New: 0, Updated: 92
-^C
+^C^C[12:14:00] Starting Desty sync...
+[12:14:00] Counts: ready=294, processed=283, toProcess=11
+[12:15:00] Page 2 error: <urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>
+[12:15:00] Done! New: 0, Updated: 71
+[12:16:00] Starting Desty sync...
+[12:16:00] Counts: ready=294, processed=283, toProcess=11
+[12:17:06] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[12:17:06] Done! New: 0, Updated: 93
+^C^C[12:22:00] Starting Desty sync...
+[12:22:00] Counts: ready=294, processed=283, toProcess=11
+[12:23:27] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[12:23:27] Done! New: 0, Updated: 94
+[12:24:00] Starting Desty sync...
+[12:24:00] Counts: ready=298, processed=283, toProcess=15
+[12:25:05] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[12:25:05] Done! New: 0, Updated: 95
+[12:26:00] Starting Desty sync...
+[12:26:00] Counts: ready=298, processed=283, toProcess=15
+[12:27:11] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[12:27:11] Done! New: 0, Updated: 96
+^C^C^C^C
