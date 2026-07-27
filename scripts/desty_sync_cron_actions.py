@@ -26,6 +26,8 @@ desty_headers = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {ACCESS_TOKEN}",
     "tenantid": TENANT_ID, "locale": "idn", "ispending": "true",
+    "Origin": "https://omni.desty.app",
+    "User-Agent": "Mozilla/5.0",
 }
 
 def run():

@@ -2,21 +2,23 @@ name: Desty Sync Cron
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # every 2 minutes
-  workflow_dispatch:  # manual trigger
+    - cron: '*/2 * * * *'
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
+
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      
-      - name: Run sync
+          python-version: '3.12'
+
+      - name: Sync Desty → Supabase
         env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
+          DESTY_ACCESS_TOKEN: ${{ secrets.DESTY_ACCESS_TOKEN }}
+          DESTY_TENANT_ID: '165686'
         run: python scripts/desty_sync_cron_actions.py

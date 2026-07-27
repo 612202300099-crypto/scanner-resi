@@ -618,4 +618,27 @@ Traceback (most recent call last):
     return self._sslobj.read(len, buffer)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 KeyboardInterrupt
-^C
+^C[10:58:00] Starting Desty sync...
+[10:58:00] Counts: ready=283, processed=283, toProcess=0
+[10:58:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[10:58:02] Done! New: 0, Updated: 0
+[11:02:00] Starting Desty sync...
+[11:02:00] Counts: ready=283, processed=283, toProcess=0
+[11:02:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[11:02:02] Done! New: 0, Updated: 1
+[11:04:00] Starting Desty sync...
+[11:04:00] Counts: ready=283, processed=283, toProcess=0
+[11:04:51] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:04:51] Done! New: 0, Updated: 78
+^C^C[11:12:00] Starting Desty sync...
+[11:12:01] Counts: ready=285, processed=283, toProcess=2
+[11:12:55] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:12:55] Done! New: 0, Updated: 79
+[11:14:00] Starting Desty sync...
+[11:14:00] Counts: ready=285, processed=283, toProcess=2
+[11:14:57] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:14:57] Done! New: 0, Updated: 80
+[11:16:01] Starting Desty sync...
+[11:16:01] Counts: ready=286, processed=283, toProcess=3
+[11:16:58] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:16:58] Done! New: 0, Updated: 81
