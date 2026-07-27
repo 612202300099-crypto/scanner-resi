@@ -1333,4 +1333,4 @@ KeyboardInterrupt
 [00:00:01] Counts: ready=122, processed=122, toProcess=0
 [00:00:04] Page 1 error: Expecting value: line 1 column 1 (char 0)
 [00:00:04] Done! New: 0, Updated: 4
-^C
+^C^C
