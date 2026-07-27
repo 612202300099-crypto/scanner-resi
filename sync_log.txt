@@ -1158,3 +1158,4 @@ KeyboardInterrupt
 [19:52:02] Counts: ready=150, processed=136, toProcess=14
 [19:52:08] Page 1 error: Expecting value: line 1 column 1 (char 0)
 [19:52:08] Done! New: 0, Updated: 8
+^C

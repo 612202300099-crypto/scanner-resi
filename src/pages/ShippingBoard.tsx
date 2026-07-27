@@ -43,9 +43,9 @@ export default function ShippingBoard() {
       const { data: dc } = await supabase.from('desty_counts').select('*').eq('id', 1).maybeSingle();
       if (dc) setDestyCounts(dc);
       const ssAll = new Set<string>();
-      // Query scans matching ANY order tracking number (efficient, no pagination needed)
+      // Query scans matching order tracking numbers
       const tns = new Set<string>();
-      const { data: allTns } = await supabase.from('order_items').select('tracking_number').eq('order_status', 'Processed').not('tracking_number','is',null);
+      const { data: allTns } = await supabase.from('order_items').select('tracking_number').not('tracking_number','is',null);
       (allTns||[]).forEach((i:any)=>{if(i.tracking_number)tns.add(i.tracking_number.trim().toUpperCase());});
       // Batch query: check which tracking numbers have KELUAR scans
       const tnArray = [...tns];
