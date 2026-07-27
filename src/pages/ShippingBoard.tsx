@@ -142,7 +142,8 @@ export default function ShippingBoard() {
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(140px,1fr))',gap:'0.5rem',marginBottom:'1.5rem'}}>
       <CC icon={<Calendar size={18}/>} label="Wajib Kirim Hari Ini" value={totalWajib||'...'} color="#f59e0b" sub={`Deadline ${todayStart.format('DD/MM')}`}/>
       <CC icon={<AlertCircle size={18}/>} label="Terlambat Platform" value={latePlatform||'0'} color="var(--danger)" sub="Lewat deadline marketplace"/>
-      <CC icon={<Clock size={18}/>} label="Terlambat Gudang" value={lateGudang||'0'} color="#dc2626" sub={`Blm scan & >${JAM_BATAS}:00`}/>
+      <CC icon={<AlertCircle size={18}/>} label="Terlambat Gudang" value={lateGudang||'0'} color="#dc2626" sub={`Blm scan & >${JAM_BATAS}:00`}/>
+      <CC icon={<Clock size={18}/>} label="Dibatalkan/Gagal" value={destyCounts?.to_process_delivery_failed??'...'} color="#6b7280" sub="Delivery Failed"/>
     </div>
 
     {/* PROGRESS SCAN */}

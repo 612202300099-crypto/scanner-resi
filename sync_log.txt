@@ -1174,4 +1174,31 @@ KeyboardInterrupt
 [20:02:01] Counts: ready=152, processed=136, toProcess=16
 [20:03:00] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [20:03:00] Done! New: 0, Updated: 94
-^C^C^C
+^C^C^C[20:12:01] Starting Desty sync...
+[20:12:01] Counts: ready=143, processed=125, toProcess=18
+[20:13:04] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[20:13:04] Done! New: 0, Updated: 91
+^C[20:16:01] Starting Desty sync...
+[20:16:01] Counts: ready=143, processed=125, toProcess=18
+[20:17:01] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[20:17:01] Done! New: 0, Updated: 92
+[20:18:01] Starting Desty sync...
+[20:18:01] Counts: ready=131, processed=113, toProcess=18
+[20:18:56] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[20:18:56] Done! New: 0, Updated: 87
+[20:20:01] Starting Desty sync...
+[20:20:01] Counts: ready=131, processed=113, toProcess=18
+[20:20:58] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[20:20:58] Done! New: 0, Updated: 88
+[20:22:01] Starting Desty sync...
+[20:22:01] Counts: ready=131, processed=113, toProcess=18
+[20:23:13] Done! New: 0, Updated: 113
+[20:24:01] Starting Desty sync...
+[20:24:01] Counts: ready=131, processed=113, toProcess=18
+[20:25:14] Done! New: 0, Updated: 113
+[20:26:01] Starting Desty sync...
+[20:26:01] Counts: ready=131, processed=113, toProcess=18
+[20:27:15] Done! New: 0, Updated: 113
+[20:30:01] Starting Desty sync...
+[20:30:01] Counts: ready=132, processed=113, toProcess=19
+[20:31:22] Done! New: 0, Updated: 113

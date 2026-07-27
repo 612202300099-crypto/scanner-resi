@@ -15,7 +15,8 @@ with urllib.request.urlopen(r, timeout=10) as resp:
 counts = {"id":1,"ready_to_ship":int(cd["readyToShip"]),"processed":int(cd["processed"]),
     "to_process":int(cd["toProcess"]),"in_delivery":int(cd["inDelivery"]),
     "delivered":int(cd["delivered"]),"shipping":int(cd["shipping"]),
-    "unpaid":int(cd["unpaid"]),"updated_at":time.strftime('%Y-%m-%dT%H:%M:%S+00:00',time.gmtime())}
+    "unpaid":int(cd["unpaid"]), "to_process_delivery_failed": int(cd.get("toProcessDeliveryFailed", 0)),
+    "updated_at":time.strftime('%Y-%m-%dT%H:%M:%S+00:00',time.gmtime())}
 
 urllib.request.urlopen(urllib.request.Request(f"{SUPABASE_URL}/rest/v1/desty_counts?id=eq.1", data=json.dumps(counts).encode(), headers=sr, method="PATCH"))
 print(f"✅ Counts: ready={counts['ready_to_ship']} proc={counts['processed']} toProc={counts['to_process']}")
