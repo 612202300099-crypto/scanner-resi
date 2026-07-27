@@ -588,3 +588,4 @@ Synced 50 orders out of 50 fetched
 [10:50:01] Counts: ready=283, processed=281, toProcess=2
 [10:50:53] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [10:50:53] Done! New: 0, Updated: 75
+^C^C
