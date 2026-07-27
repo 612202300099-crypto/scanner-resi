@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
 """
 Desty Sync Cron — GitHub Actions version
-Reads secrets from environment variables, never hardcoded.
+Reads ALL config from environment variables (no hardcoded values).
 """
 import urllib.request, json, time, os
 
-ACCESS_TOKEN = os.environ.get("DESTY_ACCESS_TOKEN", "13e212ad-4fe0-4fe9-840a-b8200ff8f370")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://ifygohsttchhgxozcwcd.supabase.co")
 SERVICE_ROLE = os.environ.get("SUPABASE_SERVICE_ROLE", "")
-SUPABASE_URL = "https://ifygohsttchhgxozcwcd.supabase.co"
-TENANT_ID = "165686"
+ACCESS_TOKEN = os.environ.get("DESTY_ACCESS_TOKEN", "")
+TENANT_ID = os.environ.get("DESTY_TENANT_ID", "165686")
 DESTY_API = "https://omni.desty.app/api/order-center"
+
+if not SERVICE_ROLE:
+    print("ERROR: SUPABASE_SERVICE_ROLE not set")
+    exit(1)
+if not ACCESS_TOKEN:
+    print("ERROR: DESTY_ACCESS_TOKEN not set")
+    exit(1)
 
 sr_headers = {
     "apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}",
@@ -22,19 +29,19 @@ desty_headers = {
 }
 
 def run():
-    print(f"[{time.strftime('%H:%M:%S')}] Syncing Desty → Supabase...")
+    print(f"[{time.strftime('%H:%M:%S')}] Syncing Desty → {SUPABASE_URL}")
     synced, updated = 0, 0
 
-    # Get existing order IDs from Supabase
     try:
-        r = urllib.request.Request(f"{SUPABASE_URL}/rest/v1/orders?select=desty_order_id&order_status=eq.Processed", headers={"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}"})
+        r = urllib.request.Request(
+            f"{SUPABASE_URL}/rest/v1/orders?select=desty_order_id&order_status=eq.Processed",
+            headers={"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}"})
         with urllib.request.urlopen(r) as resp:
             existing_ids = set(o['desty_order_id'] for o in json.loads(resp.read().decode()))
     except Exception as e:
         print(f"Failed to get existing orders: {e}")
         return
 
-    # Sync pages
     for page in range(1, 6):
         try:
             payload = json.dumps({"current": page, "size": 50, "status": "Processed"}).encode()
@@ -43,8 +50,7 @@ def run():
                 data = json.loads(resp.read().decode())
 
             records = data.get("data", {}).get("records", [])
-            if not records:
-                break
+            if not records: break
 
             for o in records:
                 did = o.get("orderId", "")
@@ -64,8 +70,9 @@ def run():
                     "order_create_time": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(ts/1000)) if ts else None,
                 }
 
+                base_h = {"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}"}
                 if did in existing_ids:
-                    check = urllib.request.Request(f"{SUPABASE_URL}/rest/v1/orders?desty_order_id=eq.{did}&select=id", headers={"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}"})
+                    check = urllib.request.Request(f"{SUPABASE_URL}/rest/v1/orders?desty_order_id=eq.{did}&select=id", headers=base_h)
                     with urllib.request.urlopen(check) as cr:
                         oid = json.loads(cr.read().decode())[0]['id']
                     urllib.request.urlopen(urllib.request.Request(

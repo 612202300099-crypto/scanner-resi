@@ -588,4 +588,34 @@ Synced 50 orders out of 50 fetched
 [10:50:01] Counts: ready=283, processed=281, toProcess=2
 [10:50:53] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [10:50:53] Done! New: 0, Updated: 75
-^C^C
+^C^C[10:56:00] Starting Desty sync...
+[10:56:00] Counts: ready=283, processed=283, toProcess=0
+Traceback (most recent call last):
+  File "D:\jhe\scanner-resi-paket\scanner-resi\scripts\desty_sync_cron.py", line 145, in <module>
+    run()
+  File "D:\jhe\scanner-resi-paket\scanner-resi\scripts\desty_sync_cron.py", line 72, in run
+    page_data = json.loads(resp.read().decode())
+                           ^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 472, in read
+    return self._read_chunked(amt)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 595, in _read_chunked
+    chunk_left = self._get_chunk_left()
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 578, in _get_chunk_left
+    chunk_left = self._read_next_chunk_size()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\http\client.py", line 538, in _read_next_chunk_size
+    line = self.fp.readline(_MAXLINE + 1)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\socket.py", line 718, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\ssl.py", line 1314, in recv_into
+    return self.read(nbytes, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\SDM\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\ssl.py", line 1166, in read
+    return self._sslobj.read(len, buffer)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+^C
