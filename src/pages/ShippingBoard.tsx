@@ -125,7 +125,16 @@ export default function ShippingBoard() {
   return <div>
     <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'1.5rem',gap:'1rem',flexWrap:'wrap'}}>
       <div><h1 className="page-title" style={{margin:0}}>📋 Antrian Pengiriman</h1><p style={{color:'var(--text-muted)',fontSize:'0.85rem'}}>{now.format('dddd, DD MMMM YYYY HH:mm')} • Synced tiap 5 menit</p></div>
-      <div style={{display:'flex',gap:'0.5rem'}}><button onClick={exportCSV} className="btn btn-outline"><Download size={18}/> Export CSV</button><button onClick={fetchAll} className="btn btn-outline"><RefreshCw size={18}/> Segarkan</button></div>
+      <div style={{display:'flex',gap:'0.5rem'}}><button onClick={exportCSV} className="btn btn-outline"><Download size={18}/> Export CSV</button>
+      <button onClick={async()=>{
+        // Trigger full refresh: fetch fresh counts from Desty + reload Supabase
+        try {
+          const r=await fetch('https://omni.desty.app/api/order-center/package/status/count',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer 13e212ad-4fe0-4fe9-840a-b8200ff8f370','tenantid':'165686','locale':'idn','ispending':'true'}});
+          const d=await r.json();
+          if(d.code===0){const c=d.data;setDestyCounts({ready_to_ship:+c.readyToShip,processed:+c.processed,to_process:+c.toProcess,in_delivery:+c.inDelivery,delivered:+c.delivered,shipping:+c.shipping,unpaid:+c.unpaid});}
+        } catch(e){}
+        fetchAll();
+      }} className="btn btn-primary"><RefreshCw size={18}/> Sync & Segarkan</button></div>
     </div>
 
     {/* DESTY COUNT CARDS */}
