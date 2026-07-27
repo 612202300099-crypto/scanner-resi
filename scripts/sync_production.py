@@ -57,7 +57,8 @@ for page in range(1, 8):
                 ts = o.get("orderCreateTime")
                 order_data = {"desty_order_id": did, "order_sn": o.get("displayedOrderSn", ""),
                     "platform": o.get("platformName", "") or "unknown", "platform_name": o.get("platformName", ""),
-                    "store_name": o.get("externalShopName", ""), "order_status": "Processed",
+                    "store_name": o.get("externalShopName", ""),
+                    "order_status": "Cancelled" if o.get("requestCancelStatus") == 1 else "Processed",
                     "customer_name": (o.get("recipientInfo") or {}).get("name", ""),
                     "shipping_city": ((o.get("recipientInfo") or {}).get("address") or {}).get("city", ""),
                     "shipping_province": ((o.get("recipientInfo") or {}).get("address") or {}).get("province", ""),
