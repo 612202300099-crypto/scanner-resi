@@ -9,6 +9,8 @@ import Scan from './pages/Scan';
 import DataList from './pages/DataList';
 import ManageUsers from './pages/ManageUsers';
 import DeliveryNotes from './pages/DeliveryNotes';
+import ShippingBoard from './pages/ShippingBoard';
+import DestySettings from './pages/DestySettings';
 import Layout from './components/Layout';
 
 function App() {
@@ -89,9 +91,11 @@ function App() {
           <Route path="scan" element={<Scan />} />
           <Route path="berita-acara" element={<DeliveryNotes />} />
 
-          {/* HANYA Admin yang boleh akses Menu Super (Data Ekspor & Manage Karyawan) */}
+          {/* HANYA Admin yang boleh akses Menu Super (Data Ekspor & Manage Karyawan & Desty) */}
           <Route path="data" element={userRole === 'admin' ? <DataList /> : <Navigate to="/scan" />} />
           <Route path="karyawan" element={userRole === 'admin' ? <ManageUsers /> : <Navigate to="/scan" />} />
+          <Route path="pengiriman" element={userRole === 'admin' ? <ShippingBoard /> : <Navigate to="/scan" />} />
+          <Route path="desty" element={userRole === 'admin' ? <DestySettings /> : <Navigate to="/scan" />} />
         </Route>
       </Routes>
     </Router>

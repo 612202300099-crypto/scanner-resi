@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, ScanLine, FileText, LogOut, Users, Menu, X } from 'lucide-react';
+import { LayoutDashboard, ScanLine, FileText, LogOut, Users, Menu, X, ClipboardList, Settings } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useEffect, useState } from 'react';
 
@@ -81,6 +81,15 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
                             </NavLink>
 
                             <NavLink
+                                to="/pengiriman"
+                                onClick={() => setIsSidebarOpen(false)}
+                                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                            >
+                                <ClipboardList size={20} />
+                                <span>Antrian Pengiriman</span>
+                            </NavLink>
+
+                            <NavLink
                                 to="/data"
                                 onClick={() => setIsSidebarOpen(false)}
                                 className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
@@ -96,6 +105,15 @@ export default function Layout({ userRole }: { userRole: 'admin' | 'staff' | nul
                             >
                                 <Users size={20} />
                                 <span>Manajemen Staf</span>
+                            </NavLink>
+
+                            <NavLink
+                                to="/desty"
+                                onClick={() => setIsSidebarOpen(false)}
+                                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                            >
+                                <Settings size={20} />
+                                <span>Konfigurasi Desty</span>
                             </NavLink>
                         </>
                     )}

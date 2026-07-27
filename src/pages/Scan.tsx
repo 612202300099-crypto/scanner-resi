@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
 import { Camera, Keyboard, AlertCircle, CheckCircle2, RefreshCw, Layers, WifiOff, UploadCloud } from 'lucide-react';
+import { matchScanToOrderItem, markItemAsShipped } from '../services/destyService';
 
 dayjs.locale('id');
 const HARI_INDO = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -256,10 +257,46 @@ export default function Scan() {
                     if (insertError) throw insertError;
 
                     emitSound('success');
+                    
+                    // DESTY INTEGRATION: Auto-match scan dengan order marketplace
+                    let destyMatchMsg: React.ReactNode = null;
+                    if (currentActiveStatus === 'KELUAR') {
+                        try {
+                            const match = await matchScanToOrderItem(cleanBarcode);
+                            if (match) {
+                                // Dapatkan scan ID untuk linking
+                                const { data: scanData } = await supabase
+                                    .from('scans')
+                                    .select('id')
+                                    .eq('resi', cleanBarcode)
+                                    .eq('status', 'KELUAR')
+                                    .order('scanned_at', { ascending: false })
+                                    .limit(1)
+                                    .single();
+                                
+                                if (scanData) {
+                                    await markItemAsShipped(match.orderItem.id, scanData.id);
+                                }
+                                destyMatchMsg = (
+                                    <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe', fontSize: '0.85rem' }}>
+                                        <div style={{ fontWeight: 700, color: '#1e40af' }}>🔗 TERHUBUNG DENGAN ORDER DESTY!</div>
+                                        <div>🛒 {match.order.platform_name}: <strong>{match.order.order_sn}</strong></div>
+                                        <div>📦 {match.orderItem.item_name} (x{match.orderItem.quantity})</div>
+                                        <div>👤 {match.order.customer_name} • 📍 {match.order.shipping_city}</div>
+                                        <div style={{ marginTop: '0.25rem', color: '#16a34a', fontWeight: 700 }}>✅ Otomatis ditandai sebagai TERKIRIM</div>
+                                    </div>
+                                );
+                            }
+                        } catch (destyErr) {
+                            console.log('Desty matching skipped (not an error):', destyErr);
+                        }
+                    }
+
                     showNotification('success', (
                         <div>
                             <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#065f46' }}>BERHASIL MENDUDA</div>
                             <div style={{ fontSize: '1rem' }}>Resi <strong>{cleanBarcode}</strong> - Posisi <strong>{currentActiveStatus}</strong></div>
+                            {destyMatchMsg}
                         </div>
                     ));
                 }

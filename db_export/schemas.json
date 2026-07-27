@@ -1,0 +1,74 @@
+{
+  "scans": {
+    "columns": [
+      "id",
+      "resi",
+      "status",
+      "scanned_at",
+      "scanned_date",
+      "scanned_time",
+      "scanned_day",
+      "user_id",
+      "user_name"
+    ],
+    "types": {
+      "id": "uuid",
+      "resi": "text",
+      "status": "text",
+      "scanned_at": "timestamptz",
+      "scanned_date": "date",
+      "scanned_time": "text",
+      "scanned_day": "text",
+      "user_id": "uuid",
+      "user_name": "text"
+    }
+  },
+  "user_roles": {
+    "columns": [
+      "user_id",
+      "role",
+      "full_name",
+      "created_at"
+    ],
+    "types": {
+      "user_id": "uuid",
+      "role": "text",
+      "full_name": "text",
+      "created_at": "timestamptz"
+    }
+  },
+  "delivery_notes": {
+    "columns": [
+      "id",
+      "note_date",
+      "sender_name",
+      "expedition",
+      "items",
+      "user_name",
+      "created_at",
+      "sender_address",
+      "courier_name",
+      "photo_data",
+      "is_finalized",
+      "photo_source",
+      "updated_at",
+      "user_id"
+    ],
+    "types": {
+      "id": "uuid",
+      "note_date": "date",
+      "sender_name": "text",
+      "expedition": "text",
+      "items": "jsonb",
+      "user_name": "text",
+      "created_at": "timestamptz",
+      "sender_address": "text",
+      "courier_name": "text",
+      "photo_data": "text",
+      "is_finalized": "bool",
+      "photo_source": "text",
+      "updated_at": "timestamptz",
+      "user_id": "uuid"
+    }
+  }
+}

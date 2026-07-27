@@ -1,0 +1,4520 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Desty Omni OpenAPI (2026.6.26)",
+    "version": "last"
+  },
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Webhooks",
+      "description": null
+    },
+    {
+      "name": "Authentication",
+      "description": null
+    },
+    {
+      "name": "Product",
+      "description": null
+    },
+    {
+      "name": "Order",
+      "description": null
+    },
+    {
+      "name": "Return Order",
+      "description": null
+    },
+    {
+      "name": "Inventory",
+      "description": null
+    },
+    {
+      "name": "Warehouse",
+      "description": null
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/yourApiAddress": {
+      "post": {
+        "tags": [
+          "Webhooks"
+        ],
+        "summary": "order callback",
+        "description": "* when order status change, this webhooks will notify you\n* you should return http status 200 if done success\n\nwe will add accessToken at header, the accessToken is you get from   \"/api/auth/token\" ,\n\n* only if you apply the authority of tenant, we will notify you when order status change\n* you can use accessToken to differentiate omni users.\n* you can use accessToken to verify whether the request is from omni;\n* When you reapply for authorization, we will use the new token to put in the request header,But due to concurrency issues, you need to be compatible with old tokens.Recommended is 1 hour",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "accessToken",
+            "in": "header",
+            "description": "accessToken (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "orderId": {
+                  "type": "string",
+                  "description": "orderId of omni"
+                },
+                "orderSn": {
+                  "type": "string",
+                  "description": "orderId of platform"
+                },
+                "bookingSn": {
+                  "type": "string",
+                  "description": "booking order id of booking order"
+                },
+                "orderType": {
+                  "type": "string",
+                  "description": "DEFAULT_ORDER、BOOKING_ORDER、MARKETPLACE_HANDLE_ORDER"
+                },
+                "orderStatusList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "order status of omni. lazada and tiktok will show in item"
+                },
+                "subOrderStatusList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "order sub status list"
+                },
+                "platformOrderStatusList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "platform order status list"
+                },
+                "orderCreateTime": {
+                  "type": "number",
+                  "description": "create time of order"
+                },
+                "orderUpdateTime": {
+                  "type": "number",
+                  "description": "update time of order"
+                },
+                "createTime": {
+                  "type": "number",
+                  "description": "order create time of omni"
+                },
+                "hasPaid": {
+                  "type": "boolean",
+                  "description": "whether order has paid"
+                },
+                "orderPaymentTime": {
+                  "type": "number"
+                },
+                "includeTax": {
+                  "type": "boolean"
+                },
+                "buyerNotes": {
+                  "type": "string"
+                },
+                "subTotal": {
+                  "type": "number",
+                  "description": "order total price"
+                },
+                "discount": {
+                  "type": "number",
+                  "description": "order discount"
+                },
+                "tax": {
+                  "type": "number",
+                  "description": "order tax"
+                },
+                "totalPrice": {
+                  "type": "number",
+                  "description": "finally order price"
+                },
+                "insuranceCost": {
+                  "type": "number"
+                },
+                "paymentMethod": {
+                  "type": "string"
+                },
+                "platform": {
+                  "type": "string",
+                  "description": "marketplace"
+                },
+                "platformName": {
+                  "type": "string"
+                },
+                "preOrder": {
+                  "type": "boolean"
+                },
+                "codOrder": {
+                  "type": "boolean",
+                  "description": "whether order is cash on delivery"
+                },
+                "customerInfo": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "platformOrderStatus": {
+                  "type": "string",
+                  "description": "lazada and tiktok will show in item"
+                },
+                "storeId": {
+                  "type": "string",
+                  "description": "marketplace store id"
+                },
+                "storeName": {
+                  "type": "string",
+                  "description": "marketplace store name"
+                },
+                "packageCount": {
+                  "type": "integer"
+                },
+                "totalWeight": {
+                  "type": "number",
+                  "description": "the unit is g"
+                },
+                "itemList": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "itemOrderId": {
+                        "type": "string"
+                      },
+                      "itemId": {
+                        "type": "string",
+                        "description": "omni sku id"
+                      },
+                      "itemCode": {
+                        "type": "string"
+                      },
+                      "itemExternalCode": {
+                        "type": "string"
+                      },
+                      "itemName": {
+                        "type": "string"
+                      },
+                      "orderStatus": {
+                        "type": "string"
+                      },
+                      "platformOrderStatus": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "number"
+                      },
+                      "quantity": {
+                        "type": "number"
+                      },
+                      "onHandStock": {
+                        "type": "number"
+                      },
+                      "promotionStock": {
+                        "type": "number"
+                      },
+                      "discountAmount": {
+                        "type": "number"
+                      },
+                      "taxAmount": {
+                        "type": "number"
+                      },
+                      "sellPrice": {
+                        "type": "number"
+                      },
+                      "originalPrice": {
+                        "type": "number"
+                      },
+                      "locationName": {
+                        "type": "string",
+                        "description": "name of warehouse"
+                      },
+                      "locationId": {
+                        "type": "string",
+                        "description": "id of warehouse"
+                      },
+                      "platformWarehouseId": {
+                        "type": "string"
+                      },
+                      "platformWarehouseName": {
+                        "type": "string"
+                      },
+                      "platformWarehouseAddress": {
+                        "type": "string"
+                      },
+                      "imageUrl": {
+                        "type": "string"
+                      },
+                      "shippingDetail": {
+                        "type": "object",
+                        "properties": {
+                          "shippingCost": {
+                            "type": "number"
+                          },
+                          "shippingFullName": {
+                            "type": "string"
+                          },
+                          "shippingAddress": {
+                            "type": "string"
+                          },
+                          "shippingArea": {
+                            "type": "string"
+                          },
+                          "shippingCity": {
+                            "type": "string"
+                          },
+                          "shippingProvince": {
+                            "type": "string"
+                          },
+                          "shippingPostCode": {
+                            "type": "string"
+                          },
+                          "shippingPhone": {
+                            "type": "string"
+                          },
+                          "deliveryDeadline": {
+                            "type": "string"
+                          },
+                          "trackingNumber": {
+                            "type": "string"
+                          },
+                          "courier": {
+                            "type": "string"
+                          },
+                          "shipper": {
+                            "type": "string"
+                          },
+                          "portCode": {
+                            "type": "string"
+                          },
+                          "regionCode": {
+                            "type": "string"
+                          },
+                          "returnPortCode": {
+                            "type": "string"
+                          },
+                          "isShipped": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "description": "order item list"
+                },
+                "orderEditDetails": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "editTimes": {
+                        "type": "integer"
+                      },
+                      "itemList": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "editItemId": {
+                              "type": "string"
+                            },
+                            "itemCode": {
+                              "type": "string"
+                            },
+                            "itemExternalCode": {
+                              "type": "string"
+                            },
+                            "itemName": {
+                              "type": "string"
+                            },
+                            "imageUrl": {
+                              "type": "string"
+                            },
+                            "price": {
+                              "type": "number"
+                            },
+                            "quantity": {
+                              "type": "number"
+                            },
+                            "locationName": {
+                              "type": "string"
+                            },
+                            "locationId": {
+                              "type": "string"
+                            },
+                            "platformWarehouseId": {
+                              "type": "string"
+                            },
+                            "platformWarehouseName": {
+                              "type": "string"
+                            },
+                            "platformWarehouseAddress": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "cancelBy": {
+                  "type": "string"
+                },
+                "logisticStatus": {
+                  "type": "string"
+                },
+                "cancelReason": {
+                  "type": "string"
+                },
+                "packageOrganizeType": {
+                  "type": "string",
+                  "description": "Single / Splitted / Combined"
+                },
+                "sellerDiscount": {
+                  "type": "number"
+                },
+                "otherCost": {
+                  "type": "number"
+                },
+                "isStockReturned": {
+                  "type": "boolean"
+                },
+                "shopifyThirdParty": {
+                  "type": "boolean"
+                },
+                "tiktokNDD": {
+                  "type": "boolean"
+                },
+                "orderEditTimes": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/token": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Access Token Request",
+        "description": "Query authorization information based on authorization request information\nThe token is valid for 30 days,need to refresh after expire\nyou will need to put the accessToken on http header on each request of other api",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "applyId": {
+                  "type": "string",
+                  "description": "apply_id retrieved from apply authorization interface"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Omni main account user's name used on Apply Authorization"
+                },
+                "mobile": {
+                  "type": "string",
+                  "description": " Omni main account mobile used on Apply Authorization"
+                }
+              },
+              "required": [
+                "applyId",
+                "username",
+                "mobile"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                      "description": "Access token for every interface request authentication"
+                    },
+                    "tokenType": {
+                      "type": "string",
+                      "description": "The token prefix, should be shown as \"Bearer\""
+                    },
+                    "expireTime": {
+                      "type": "number",
+                      "description": "token expire time,timestamp"
+                    }
+                  },
+                  "required": [
+                    "accessToken",
+                    "tokenType",
+                    "expireTime"
+                  ]
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/apply": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Apply Authorization",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "companyName": {
+                  "type": "string",
+                  "description": "Third-party name"
+                },
+                "companyEmail": {
+                  "type": "string",
+                  "description": "Third-party email"
+                },
+                "username": {
+                  "type": "string",
+                  "description": "Omni main account user's name"
+                },
+                "email": {
+                  "type": "string",
+                  "description": "Omni main account email"
+                },
+                "mobile": {
+                  "type": "string",
+                  "description": "Omni main account phone number"
+                }
+              },
+              "required": [
+                "companyName",
+                "mobile",
+                "email",
+                "username",
+                "companyEmail"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "applyId": {
+                      "type": "string",
+                      "description": "Permission request id, used for access token request"
+                    }
+                  },
+                  "required": [
+                    "applyId"
+                  ]
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/product/page": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "List Product",
+        "description": "**Interface to retrieve product information list from Desty Omni.**",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization ",
+            "in": "header",
+            "description": "Authorization  (Only:)",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "pageNumber": {
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "type": "integer",
+                  "description": "max pageSize is 50"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "pageNumber": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "productName": {
+                            "type": "string"
+                          },
+                          "spuId": {
+                            "type": "string"
+                          },
+                          "isBundleProduct": {
+                            "type": "boolean"
+                          },
+                          "createTime": {
+                            "type": "number"
+                          },
+                          "updateTime": {
+                            "type": "number"
+                          },
+                          "skuInfoList": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "skuId": {
+                                  "type": "string"
+                                },
+                                "skuNumber": {
+                                  "type": "string",
+                                  "description": "skuCode"
+                                },
+                                "salesPrice": {
+                                  "type": "number"
+                                },
+                                "image": {
+                                  "type": "string"
+                                },
+                                "isBundleProduct": {
+                                  "type": "boolean"
+                                },
+                                "variantNameOptionList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "option": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  }
+                                },
+                                "bundleChildSkuList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "productName": {
+                                        "type": "string"
+                                      },
+                                      "skuNumber": {
+                                        "type": "string"
+                                      },
+                                      "salesPrice": {
+                                        "type": "number"
+                                      },
+                                      "bundleQuantity": {
+                                        "type": "number"
+                                      }
+                                    }
+                                  }
+                                },
+                                "masterInventoryList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "warehouseId": {
+                                        "type": "string"
+                                      },
+                                      "warehouseName": {
+                                        "type": "string"
+                                      },
+                                      "externalWarehouseId": {
+                                        "type": "string"
+                                      },
+                                      "onHandStock": {
+                                        "type": "number"
+                                      },
+                                      "promotionStock": {
+                                        "type": "number"
+                                      }
+                                    }
+                                  }
+                                },
+                                "bindingMarketplaceSkuList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "platformName": {
+                                        "type": "string"
+                                      },
+                                      "platformSkuId": {
+                                        "type": "string"
+                                      },
+                                      "platformShopId": {
+                                        "type": "string"
+                                      },
+                                      "price": {
+                                        "type": "number",
+                                        "description": "Platform sales price (except Tokopedia)"
+                                      },
+                                      "createTime": {
+                                        "type": "number"
+                                      },
+                                      "updateTime": {
+                                        "type": "number"
+                                      },
+                                      "inventoryInfo": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "platformWarehouseId": {
+                                              "type": "string"
+                                            },
+                                            "platformWarehouseName": {
+                                              "type": "string"
+                                            },
+                                            "stock": {
+                                              "type": "number"
+                                            },
+                                            "price": {
+                                              "type": "number",
+                                              "description": "Platform sales price (valid only on Tokopedia)"
+                                            },
+                                            "bindingMasterWarehouseId": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": []
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "baseUnit": {
+                                  "type": "string"
+                                },
+                                "unitList": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "unitName": {
+                                        "type": "string"
+                                      },
+                                      "conversionToBase": {
+                                        "type": "number"
+                                      },
+                                      "isBaseUnit": {
+                                        "type": "boolean"
+                                      }
+                                    },
+                                    "required": [
+                                      "isBaseUnit",
+                                      "unitName",
+                                      "conversionToBase"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "baseUnit",
+                                "unitList"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "pageNumber",
+                    "pageSize",
+                    "totalPages",
+                    "totalCount",
+                    "results"
+                  ]
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/product/sku/detail": {
+      "get": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "GET SKU Detail",
+        "description": "",
+        "parameters": [
+          {
+            "name": "skuNumber",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "skuId": {
+                      "type": "string"
+                    },
+                    "skuNumber": {
+                      "type": "string",
+                      "description": "skuCode"
+                    },
+                    "salesPrice": {
+                      "type": "number"
+                    },
+                    "image": {
+                      "type": "string"
+                    },
+                    "isBundleProduct": {
+                      "type": "boolean"
+                    },
+                    "variantNameOptionList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "option": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "bundleChildSkuList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "productName": {
+                            "type": "string"
+                          },
+                          "skuNumber": {
+                            "type": "string"
+                          },
+                          "salesPrice": {
+                            "type": "number"
+                          },
+                          "bundleQuantity": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    },
+                    "masterInventoryList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "warehouseId": {
+                            "type": "string"
+                          },
+                          "warehouseName": {
+                            "type": "string"
+                          },
+                          "externalWarehouseId": {
+                            "type": "string"
+                          },
+                          "onHandStock": {
+                            "type": "number"
+                          },
+                          "promotionStock": {
+                            "type": "number"
+                          }
+                        },
+                        "required": []
+                      }
+                    },
+                    "bindingMarketplaceSkuList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "platformName": {
+                            "type": "string"
+                          },
+                          "platformSkuId": {
+                            "type": "string"
+                          },
+                          "platformShopId": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "number",
+                            "description": "Platform sales price (except Tokopedia)"
+                          },
+                          "createTime": {
+                            "type": "string",
+                            "mock": {
+                              "mock": "@datetime"
+                            }
+                          },
+                          "updateTime": {
+                            "type": "string",
+                            "mock": {
+                              "mock": "@datetime"
+                            }
+                          },
+                          "inventoryInfo": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "platformWarehouseId": {
+                                  "type": "string"
+                                },
+                                "platformWarehouseName": {
+                                  "type": "string"
+                                },
+                                "stock": {
+                                  "type": "number"
+                                },
+                                "price": {
+                                  "type": "number",
+                                  "description": "Platform sales price (only on Tokopedia)"
+                                },
+                                "bindingMasterWarehouseId": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "baseUnit": {
+                      "type": "string"
+                    },
+                    "unitList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "unitName": {
+                            "type": "string"
+                          },
+                          "conversionToBase": {
+                            "type": "number"
+                          },
+                          "isBaseUnit": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "unitName",
+                          "isBaseUnit",
+                          "conversionToBase"
+                        ]
+                      }
+                    }
+                  },
+                  "description": "data",
+                  "required": [
+                    "baseUnit",
+                    "unitList"
+                  ]
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/product/sku/masterPriceUpdate": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Update Master Product Price",
+        "description": "<span class=\"colour\" style=\"color:rgb(85, 85, 85)\"><span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to update Master Product price. An API request will change master product price and the bound marketplace product price.</span></span>",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "skuNumber": {
+                  "type": "string",
+                  "description": "Master Product SKU Code"
+                },
+                "price": {
+                  "type": "number",
+                  "description": "Target sale price. Allowed value: 100 - 150000000"
+                }
+              },
+              "required": [
+                "skuNumber",
+                "price"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "API response code, always shown as “0”"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "API response message, always shown as “null”"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/product/sku/marketplacePriceUpdate": {
+      "post": {
+        "tags": [
+          "Product"
+        ],
+        "summary": "Update Marketplace Product Price",
+        "description": "API to update Marketplace Product price. An API request will only change the corresponding marketplace product price.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "platformName": {
+                  "type": "string",
+                  "description": "Marketplace name: lazada, tokopedia, shopee, tiktok, blibli, zalora, destyStore, destyPos"
+                },
+                "platformSkuId": {
+                  "type": "string",
+                  "description": "Marketplace SKU ID, can be retrieved from List Product or GET SKU Detail API"
+                },
+                "platformShopId": {
+                  "type": "string",
+                  "description": "Marketplace Shop ID, can be retrieved from List Product or GET SKU Detail API"
+                },
+                "platformWarehouseId": {
+                  "type": "string",
+                  "description": "Only required for Tokopedia"
+                },
+                "price": {
+                  "type": "number",
+                  "description": "Target sales price"
+                }
+              },
+              "required": [
+                "platformName",
+                "platformSkuId",
+                "platformShopId",
+                "price"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "API response code, always shown as “0”"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "API response message, always shown as “null”"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/order/page": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "List Order",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to retrieve multiple order information from Desty Omnichannel. The information provided is not as complete as the Order Detail. Use List Order API to retrieve orderId then subsequently request GET Order Detail API.</span>",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "description": "Supported marketplace name: lazada, tokopedia, shopee, tiktok, blibli, zalora, destyStore, destyPos"
+                },
+                "startDate": {
+                  "type": "number",
+                  "mock": {
+                    "mock": "@timestamp"
+                  },
+                  "description": "Order create time (Start time) using unix timestamp in milliseconds"
+                },
+                "endDate": {
+                  "type": "number",
+                  "description": "Order create time (Finish time) using unix timestamp in milliseconds"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Order status: Unpaid, New_Orders, Ready_To_Ship, Shipping, Completed, Cancellations, Returns"
+                },
+                "pageNumber": {
+                  "type": "integer",
+                  "description": "The number of the order pages. One pageNumber contains 500 pageSize."
+                },
+                "pageSize": {
+                  "type": "integer",
+                  "description": "The number of orders within a page. Already set to 500 by default."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "pageNumber": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "description": "Maximum pageSize is set to 500 by default"
+                    },
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "orderId": {
+                            "type": "string"
+                          },
+                          "orderSn": {
+                            "type": "string"
+                          },
+                          "bookingSn": {
+                            "type": "string"
+                          },
+                          "orderType": {
+                            "type": "string"
+                          },
+                          "orderStatusList": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "platformOrderStatusList": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "orderCreateTime": {
+                            "type": "number",
+                            "mock": {
+                              "mock": "@timestamp"
+                            },
+                            "description": "timestamp"
+                          },
+                          "orderUpdateTime": {
+                            "type": "number",
+                            "mock": {
+                              "mock": "@timestamp"
+                            },
+                            "description": "timestamp"
+                          },
+                          "createTime": {
+                            "type": "number",
+                            "mock": {
+                              "mock": "@timestamp"
+                            },
+                            "description": "timestamp"
+                          },
+                          "hasPaid": {
+                            "type": "boolean"
+                          },
+                          "platform": {
+                            "type": "string"
+                          },
+                          "platformName": {
+                            "type": "string"
+                          },
+                          "storeId": {
+                            "type": "string"
+                          },
+                          "storeName": {
+                            "type": "string"
+                          },
+                          "codOrder": {
+                            "type": "boolean"
+                          },
+                          "cancelBy": {
+                            "type": "string"
+                          },
+                          "logisticStatus": {
+                            "type": "string"
+                          },
+                          "orderPaymentTime": {
+                            "type": "number"
+                          },
+                          "cancelReason": {
+                            "type": "string"
+                          },
+                          "preOrder": {
+                            "type": "boolean"
+                          },
+                          "trackingNumberList": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "packageOrganizedType": {
+                            "type": "string",
+                            "description": "Single / Splitted / Combined"
+                          },
+                          "shippedStatus": {
+                            "type": "string",
+                            "description": "NotShipped / PartiallyShipped / AllShipped"
+                          },
+                          "pickupCode": {
+                            "type": "string"
+                          },
+                          "isStockReturned": {
+                            "type": "boolean",
+                            "description": "Whether putting back stock in Omni has been processed"
+                          },
+                          "shopifyThirdParty": {
+                            "type": "boolean",
+                            "description": "Whether an order is using Shopify third party app or not  (boolean value will only be displayed for Shopify order)"
+                          },
+                          "tiktokNDD": {
+                            "type": "boolean",
+                            "description": "Whether an order is using TikTok NDD or not (boolean value will only be displayed for TikTok order)"
+                          },
+                          "orderEditTimes": {
+                            "type": "integer",
+                            "description": "The number of times the order has been edited"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/order/detail": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get Order Detail",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\"><span><span>API to retrieve specific order information from Desty Omnichannel. An API request will only show one order information.</span></span></span>",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:)",
+            "required": true,
+            "type": "string",
+            "default": ""
+          },
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "description": "Desty Omnichannel internal Order ID retrieved from List Order API or Order Webhook, not marketplace Order ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "API response code, always shown as “0”"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "API response message, always shown as “null”"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "orderId": {
+                      "type": "string",
+                      "description": "Desty Omnichannel Order ID, not marketplace Order ID"
+                    },
+                    "orderSn": {
+                      "type": "string",
+                      "description": "Marketplace Order ID"
+                    },
+                    "bookingSn": {
+                      "type": "string",
+                      "description": "Marketplace Booking ID for Pengiriman Kilat Shopee (Shown if orderType = BOOKING_ORDER)"
+                    },
+                    "orderType": {
+                      "type": "string",
+                      "description": "DEFAULT_ORDER = Regular oder, \nMARKETPLACE_HANDLE_ORDER = Order handled and fulfilled by marketplace,\nBOOKING_ORDER = Shopee Advance Fulfillment Booking Order (Pengiriman Kilat)"
+                    },
+                    "orderStatusList": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Desty Omnichannel status: Unpaid, New_Orders, Ready_To_Ship, Shipping, Completed, Cancellations, Returns"
+                    },
+                    "subOrderStatusList": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Desty Omnichannel sub-status to distinguish order that has been arranged shipment (RTS) under “Ready_To_Ship” orderStatus. Value: To Process, Processed"
+                    },
+                    "platformOrderStatusList": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "Marketplace order status"
+                    },
+                    "orderCreateTime": {
+                      "type": "number",
+                      "mock": {
+                        "mock": "@timestamp"
+                      },
+                      "description": "Order create time start time using unix timestamp in milliseconds (Created time in marketplace)"
+                    },
+                    "orderUpdateTime": {
+                      "type": "number",
+                      "mock": {
+                        "mock": "@timestamp"
+                      },
+                      "description": "Order update time start time using unix timestamp in milliseconds (Update time in marketplace; upon status change)"
+                    },
+                    "createTime": {
+                      "type": "number",
+                      "mock": {
+                        "mock": "@timestamp"
+                      },
+                      "description": "Order create time start time using unix timestamp in milliseconds (Created time in Desty Omnichannel)"
+                    },
+                    "hasPaid": {
+                      "type": "boolean",
+                      "description": "true or false. true = order already paid; false = unpaid"
+                    },
+                    "orderPaymentTime": {
+                      "type": "number",
+                      "description": "Order payment time using unix timestamp in milliseconds (Payment time in marketplace)",
+                      "mock": {
+                        "mock": "@timestamp"
+                      }
+                    },
+                    "includeTax": {
+                      "type": "boolean",
+                      "description": "true or false. true = order has tax; false = no tax"
+                    },
+                    "buyerNotes": {
+                      "type": "string",
+                      "description": "Order marketplace buyer notes"
+                    },
+                    "subTotal": {
+                      "type": "number",
+                      "description": "[Seller Sales Information & Buyer Payment] Order subtotal, sum up price of the item price (After product discount)"
+                    },
+                    "discount": {
+                      "type": "number",
+                      "description": "[Buyer Payment] Combined discount amount from platform and seller (Not product discount)"
+                    },
+                    "tax": {
+                      "type": "number",
+                      "description": "[Buyer Payment] Order-level tax. Usually shown as “0” because marketplace doesn’t put the tax on order level "
+                    },
+                    "totalPrice": {
+                      "type": "number",
+                      "description": "[Buyer Payment] Total amount that buyer paid for the order"
+                    },
+                    "totalSales": {
+                      "type": "number"
+                    },
+                    "insuranceCost": {
+                      "type": "number",
+                      "description": "[Buyer Payment] Shipping insurance"
+                    },
+                    "paymentMethod": {
+                      "type": "string",
+                      "description": "Payment method name provided by corresponding marketplace"
+                    },
+                    "platform": {
+                      "type": "string",
+                      "description": "Always shown as “desty”"
+                    },
+                    "platformName": {
+                      "type": "string",
+                      "description": "Marketplace name: lazada, tokopedia, shopee, tiktok, blibli, zalora, destyStore, destyPos"
+                    },
+                    "preOrder": {
+                      "type": "boolean",
+                      "description": "true or false. true = preOrder; false = non-preOrder"
+                    },
+                    "codOrder": {
+                      "type": "boolean",
+                      "description": "true or false. true = COD payment; false = non-COD"
+                    },
+                    "storeId": {
+                      "type": "string",
+                      "description": "Marketplace Store ID"
+                    },
+                    "storeName": {
+                      "type": "string",
+                      "description": "Marketplace Store Name"
+                    },
+                    "packageCount": {
+                      "type": "integer",
+                      "description": "Package number, could be more than 1 if the order is split"
+                    },
+                    "totalWeight": {
+                      "type": "number",
+                      "description": "Order total item weight in gram"
+                    },
+                    "customerInfo": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Customer account name on the marketplace"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "description": "Customer phone number. Usually shown as “null”"
+                        },
+                        "email": {
+                          "type": "string",
+                          "description": "Customer email. Usually shown as “null”"
+                        }
+                      }
+                    },
+                    "itemList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "itemOrderId": {
+                            "type": "string",
+                            "description": "Item Order ID"
+                          },
+                          "itemId": {
+                            "type": "string",
+                            "description": "Item ID"
+                          },
+                          "itemCode": {
+                            "type": "string",
+                            "description": "Master Product SKU Code (Shown as \"null\" if the ordered marketplace product isn't bound to master product)"
+                          },
+                          "itemExternalCode": {
+                            "type": "string",
+                            "description": "Marketplace Product SKU Code"
+                          },
+                          "itemName": {
+                            "type": "string",
+                            "description": "Product name"
+                          },
+                          "orderStatus": {
+                            "type": "string",
+                            "description": "Desty Omnichannel status: Unpaid, New_Orders, Ready_To_Ship, Shipping, Completed, Cancellations, Returns"
+                          },
+                          "platformOrderStatus": {
+                            "type": "string",
+                            "description": "Marketplace order status"
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Product description"
+                          },
+                          "price": {
+                            "type": "number",
+                            "description": "Product price before discount (Same as originalPrice)"
+                          },
+                          "quantity": {
+                            "type": "number",
+                            "description": "Product order quantity"
+                          },
+                          "onHandStock": {
+                            "type": "number",
+                            "description": "Latest product On Hand stock"
+                          },
+                          "promotionStock": {
+                            "type": "number",
+                            "description": "Latest stock that is locked for upcoming marketplaces' promotion activities. Available qty will be deducted for Promotion Qty"
+                          },
+                          "discountAmount": {
+                            "type": "number",
+                            "description": "Product discount amount. Calculate manually if the value shows null or 0 (Due to the marketplace not send the product discount value to Desty).\n\nProduct discount = originalPrice - sellPrice"
+                          },
+                          "taxAmount": {
+                            "type": "number",
+                            "description": "Product level tax. Usually shown as “null” because the marketplace doesn’t put the tax on product level"
+                          },
+                          "sellPrice": {
+                            "type": "number",
+                            "description": "Product price after discount"
+                          },
+                          "originalPrice": {
+                            "type": "number",
+                            "description": "Product price before discount"
+                          },
+                          "locationName": {
+                            "type": "string",
+                            "description": "Master warehouse name. If marketplace warehouse binds to Desty Master Warehouse then locationName is using Desty's corresponding Master Warehouse name"
+                          },
+                          "locationId": {
+                            "type": "string",
+                            "description": "Master warehouse ID. If marketplace warehouse binds to Desty Master Warehouse then locationId is using Desty's corresponding Master Warehouse ID"
+                          },
+                          "platformWarehouseId": {
+                            "type": "string",
+                            "description": "Marketplace warehouse ID"
+                          },
+                          "platformWarehouseName": {
+                            "type": "string",
+                            "description": "Marketplace warehouse name"
+                          },
+                          "platformWarehouseAddress": {
+                            "type": "string",
+                            "description": "Marketplace warehouse address"
+                          },
+                          "imageUrl": {
+                            "type": "string",
+                            "description": "Marketplace product main image URL"
+                          },
+                          "returnQuantity": {
+                            "type": "number"
+                          },
+                          "shippingDetail": {
+                            "type": "object",
+                            "properties": {
+                              "shippingCost": {
+                                "type": "number",
+                                "description": "[Buyer Payment] Shipping fee paid by customer"
+                              },
+                              "shippingFullName": {
+                                "type": "string",
+                                "description": "Order receiver name"
+                              },
+                              "shippingAddress": {
+                                "type": "string",
+                                "description": "Order receiver address"
+                              },
+                              "shippingArea": {
+                                "type": "string",
+                                "description": "Order receiver area"
+                              },
+                              "shippingCity": {
+                                "type": "string",
+                                "description": "Order receiver city"
+                              },
+                              "shippingProvince": {
+                                "type": "string",
+                                "description": "Order receiver province"
+                              },
+                              "shippingPostCode": {
+                                "type": "string",
+                                "description": "Order receiver postcode"
+                              },
+                              "shippingPhone": {
+                                "type": "string",
+                                "description": "Order receiver phone number"
+                              },
+                              "deliveryDeadline": {
+                                "type": "string",
+                                "mock": {
+                                  "mock": "@datetime"
+                                },
+                                "description": "Delivery deadline using unix timestamp in milliseconds"
+                              },
+                              "trackingNumber": {
+                                "type": "string",
+                                "description": "Courier tracking number"
+                              },
+                              "packageId": {
+                                "type": "string",
+                                "description": "Package ID"
+                              },
+                              "courier": {
+                                "type": "string",
+                                "description": "Shipping Courier"
+                              },
+                              "shipper": {
+                                "type": "string",
+                                "description": "Shipping Courier"
+                              },
+                              "portCode": {
+                                "type": "string",
+                                "description": "Port Code displayed on the shipping label"
+                              },
+                              "regionCode": {
+                                "type": "string",
+                                "description": "Region Code displayed on the shipping label"
+                              },
+                              "returnPortCode": {
+                                "type": "string",
+                                "description": "Return Port Code displayed on the shipping label"
+                              },
+                              "isShipped": {
+                                "type": "boolean",
+                                "description": "true or false. true = order is already shipped; false = order is not shipped yet"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "orderEditDetails": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "editTimes": {
+                            "type": "integer",
+                            "description": "Order editing sequence number (max. 3 edit)"
+                          },
+                          "itemList": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "editItemId": {
+                                  "type": "string",
+                                  "description": "Item ID after being edited"
+                                },
+                                "itemId": {
+                                  "type": "string",
+                                  "description": "Product Item ID"
+                                },
+                                "itemCode": {
+                                  "type": "string",
+                                  "description": "Master product SKU"
+                                },
+                                "itemExternalCode": {
+                                  "type": "string"
+                                },
+                                "itemName": {
+                                  "type": "string",
+                                  "description": "Product name"
+                                },
+                                "imageUrl": {
+                                  "type": "string",
+                                  "description": "Product image URL"
+                                },
+                                "price": {
+                                  "type": "number",
+                                  "description": "Product price"
+                                },
+                                "quantity": {
+                                  "type": "number",
+                                  "description": "Latest edited product quantity"
+                                },
+                                "locationName": {
+                                  "type": "string",
+                                  "description": "Master warehouse name. If marketplace warehouse binds to Desty Master Warehouse then locationName is using Desty's corresponding Master Warehouse name"
+                                },
+                                "locationId": {
+                                  "type": "string",
+                                  "description": "Master warehouse ID. If marketplace warehouse binds to Desty Master Warehouse then locationId is using Desty's corresponding Master Warehouse ID"
+                                },
+                                "platformWarehouseId": {
+                                  "type": "string",
+                                  "description": "Marketplace warehouse ID"
+                                },
+                                "platformWarehouseName": {
+                                  "type": "string",
+                                  "description": "Marketplace warehouse name"
+                                },
+                                "platformWarehouseAddress": {
+                                  "type": "string",
+                                  "description": "Marketplace warehouse address"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "cancelBy": {
+                      "type": "string",
+                      "description": "Cancellation source"
+                    },
+                    "logisticStatus": {
+                      "type": "string",
+                      "description": "Logistic status for Shopee"
+                    },
+                    "cancelReason": {
+                      "type": "string",
+                      "description": "Cancellation reason from marketplace"
+                    },
+                    "packageOrganizeType": {
+                      "type": "string",
+                      "description": "Package type if the package order is split: Single, Splitted, Combined"
+                    },
+                    "pickupCode": {
+                      "type": "string",
+                      "description": "Pickup Code for Shopee Instant and Same day courier"
+                    },
+                    "refundAmount": {
+                      "type": "number",
+                      "description": "[Seller Sales Information] Total refund amount if there’s an order refund"
+                    },
+                    "sellerDiscount": {
+                      "type": "number",
+                      "description": "[Seller Sales Information] Total discount charged to seller"
+                    },
+                    "totalInvoice": {
+                      "type": "number",
+                      "description": "[Seller Sales Information] Total invoice is an amount that excludes service fee and shipping fees. totalInvoice = subTotal - refundAmount - sellerDiscount"
+                    },
+                    "finalShippingFee": {
+                      "type": "number",
+                      "description": "[Seller Sales Information] Amount of shipping fee charged to seller"
+                    },
+                    "serviceFee": {
+                      "type": "number",
+                      "description": "[Seller Sales Information] Amount of marketplace service fee charged to seller"
+                    },
+                    "escrowAmount": {
+                      "type": "string",
+                      "description": "[Seller Sales Information] Escrow amount (penyelesaian pembayaran). Only for Shopee and TikTok."
+                    },
+                    "otherCost": {
+                      "type": "number",
+                      "description": "[Buyer Payment] Any other cost charged to buyer"
+                    },
+                    "isStockReturned": {
+                      "type": "boolean",
+                      "description": "Whether putting back stock in Omni has been processed"
+                    },
+                    "shopifyThirdParty": {
+                      "type": "boolean",
+                      "description": "Whether an order is using Shopify third party app or not  (boolean value will only be displayed for Shopify order)"
+                    },
+                    "tiktokNDD": {
+                      "type": "boolean",
+                      "description": "Whether an order is using TikTok NDD or not (boolean value will only be displayed for TikTok order)"
+                    },
+                    "orderEditTimes": {
+                      "type": "integer",
+                      "description": "The number of times the order has been edited\t"
+                    },
+                    "hasReturn": {
+                      "type": "boolean"
+                    },
+                    "returnOrderIdList": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        }
+      }
+    },
+    "/api/order/accept": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Accept Order",
+        "description": "only support tokopedia",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization ",
+            "in": "header",
+            "description": "Authorization  (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "orderId": {
+                  "type": "string",
+                  "description": "omni order no"
+                }
+              },
+              "required": [
+                "orderId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/order/createPackage": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Create Package",
+        "description": "<span><span>Only support Lazada, Blibli, and Zalora order with </span></span><span class=\"colour\" style=\"color:rgb(0, 0, 0)\">New_Orders. The entire product within the order package will be created, no splitting to different packages.</span>",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization ",
+            "in": "header",
+            "description": "Authorization  (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "orderId": {
+                  "type": "string",
+                  "description": "Desty Omnichannel internal Order ID retrieved from List Order API or Order Webhook, not marketplace Order ID"
+                }
+              },
+              "required": [
+                "orderId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "API response code, always shown as “0”"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "API response message, always shown as “null”"
+                },
+                "data": {
+                  "type": "boolean",
+                  "description": "true or false. true = API response is successfully received; false = API response is failed"
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/order/pickup": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Request Order Pick Up",
+        "description": "for the shipmentinfo . currently only support when order is Delivered by Seller. and support platform is lazada、tiktok、dstore and tokopedia dropoff",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization ",
+            "in": "header",
+            "description": "Authorization  (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "orderId": {
+                  "type": "string",
+                  "description": "omni order no"
+                },
+                "warehouseId": {
+                  "type": "string"
+                },
+                "shipmentInfo": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "orderItemId": {
+                        "type": "string"
+                      },
+                      "trackingNumber": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "orderItemId",
+                      "trackingNumber"
+                    ]
+                  },
+                  "description": "when order is Delivered by Seller."
+                }
+              },
+              "required": [
+                "orderId",
+                "warehouseId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/order/confirmDelivery": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Request Order Confirm Delivery",
+        "description": "currently only support when order is Delivered by Seller. and support platform is lazada、tiktok、dstore and bilbli bigproduct or bopis",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization ",
+            "in": "header",
+            "description": "Authorization  (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "orderId": {
+                  "type": "string",
+                  "description": "omni order no"
+                },
+                "isSuccess": {
+                  "type": "boolean",
+                  "description": "Whether it was successfully delivered to the buyer"
+                },
+                "blibliDeliveredDate": {
+                  "type": "string"
+                },
+                "blibliRecipientName": {
+                  "type": "string"
+                },
+                "blibliRecipientStatus": {
+                  "type": "string"
+                },
+                "blibliSettlementCode": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "orderId",
+                "isSuccess"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/order/print/label/bytes": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "GET Shipping Label File",
+        "description": "API to retrieve shipping label, response will directly display the PDF file in byte array file. An API request will only show one shipping label.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "description": "Desty Omnichannel internal Order ID retrieved from List Order API or Order Webhook, not marketplace Order ID",
+            "type": "string"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Label format options: \"sellercenter\" or \"desty\"",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string",
+              "description": "PDF file byte array"
+            }
+          }
+        }
+      }
+    },
+    "/api/order/print/label": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "GET Shipping Label URL",
+        "description": "API to retrieve shipping label, response will show the URL of the PDF file. An API request will only show one shipping label.",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "description": "Desty Omnichannel internal Order ID retrieved from List Order API or Order Webhook, not marketplace Order ID",
+            "type": "string"
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Label format options: \"sellercenter\" or \"desty\"",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "API response code, always shown as “0”"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "API response message, always shown as “null”"
+                },
+                "data": {
+                  "type": "string",
+                  "description": "URL of PDF. For Tokopedia, will return the URL of HTML, not PDF"
+                }
+              },
+              "required": [
+                "code",
+                "msg",
+                "data"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/order/shipping/param/shopee": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "GET Shopee Shipping Parameters",
+        "description": "",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "shippingCarrier": {
+                      "type": "string"
+                    },
+                    "deliverArea": {
+                      "type": "string"
+                    },
+                    "codAmount": {
+                      "type": "number"
+                    },
+                    "returnFirstSortCode": {
+                      "type": "string"
+                    },
+                    "recipientSortCode": {
+                      "type": "object",
+                      "properties": {
+                        "firstRecipientSortCode": {
+                          "type": "string"
+                        },
+                        "secondRecipientSortCode": {
+                          "type": "string"
+                        },
+                        "thirdRecipientSortCode": {
+                          "type": "string"
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              },
+              "required": [
+                "code",
+                "msg"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "/api/order/putBackStock/items": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get Order Put Back Item Info",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to g</span>et the corresponding bound Master item information of the order. Only DeliveryFailed \"Cancellations\" status orders support putting back stock. Item will automatically be converted to bundled child products if it is a bundled product.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "description": "Desty Omnichannel internal Order ID retrieved from List Return Order API, not marketplace ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuId": {
+                        "type": "string"
+                      },
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "skuCode"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "description": "The original quantity included in the order"
+                      }
+                    }
+                  },
+                  "description": "Returnable Items"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/order/putBackStock": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Order Put Back Stock",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to e</span>xecute product returns for the specified order. <span class=\"colour\" style=\"color:rgb(85, 85, 85)\">Only DeliveryFailed \"Cancellations\" status orders support putting back stock.</span> The returned items must be included in the Get Order Put Back Item Info and the return quantity must be less than or equal to the original order quantity.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "orderId": {
+                  "type": "string",
+                  "description": "Desty Omnichannel internal Return Order ID retrieved from List Order API, not marketplace ID"
+                },
+                "warehouseId": {
+                  "type": "string",
+                  "description": "warehouse id, only warehouse_id retrieved on externalWarehouseId will be authenticated, mapped, and allowed to put back stock"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "skuCode"
+                      },
+                      "putBackQuantity": {
+                        "type": "number",
+                        "description": "Quantity returned"
+                      },
+                      "unitCost": {
+                        "type": "number",
+                        "description": "Required for FIFO/Average user"
+                      }
+                    },
+                    "required": [
+                      "skuNumber",
+                      "putBackQuantity"
+                    ]
+                  },
+                  "description": "List of returned items"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "required": [
+                "orderId",
+                "warehouseId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "boolean",
+                  "description": "true or false. true = API response is successfully received; false = API response is failed"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/return-order/detail": {
+      "get": {
+        "tags": [
+          "Return Order"
+        ],
+        "summary": "Get Return Order Detail",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to retrieve specific return order information from Desty Omnichannel. An API request will only show one order information.</span>",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "returnOrderId",
+            "in": "query",
+            "required": true,
+            "description": "Desty Omnichannel internal Return Order ID retrieved from List Return Order API, not marketplace ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "returnOrderId": {
+                      "type": "string"
+                    },
+                    "returnOrderSn": {
+                      "type": "string"
+                    },
+                    "returnType": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "orderId": {
+                      "type": "string"
+                    },
+                    "orderSn": {
+                      "type": "string"
+                    },
+                    "orderCreateTime": {
+                      "type": "number",
+                      "mock": {
+                        "mock": "@timestamp"
+                      },
+                      "description": "timestamp"
+                    },
+                    "orderUpdateTime": {
+                      "type": "number",
+                      "mock": {
+                        "mock": "@timestamp"
+                      },
+                      "description": "timestamp"
+                    },
+                    "platformName": {
+                      "type": "string"
+                    },
+                    "storeId": {
+                      "type": "string"
+                    },
+                    "storeName": {
+                      "type": "string"
+                    },
+                    "initiator": {
+                      "type": "string",
+                      "description": "Return Initiator"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "buyerName": {
+                      "type": "string"
+                    },
+                    "courier": {
+                      "type": "string"
+                    },
+                    "shipmentNo": {
+                      "type": "string"
+                    },
+                    "refundAmount": {
+                      "type": "string"
+                    },
+                    "compensationAmount": {
+                      "type": "string"
+                    },
+                    "actionDeadline": {
+                      "type": "number",
+                      "description": "timestamp",
+                      "mock": {
+                        "mock": "@timestamp"
+                      }
+                    },
+                    "closeDeadline": {
+                      "type": "number",
+                      "description": "timestamp",
+                      "mock": {
+                        "mock": "@timestamp"
+                      }
+                    },
+                    "isStockReturned": {
+                      "type": "boolean",
+                      "description": "Whether putting back stock in Omni has been processed"
+                    },
+                    "itemList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "returnItemId": {
+                            "type": "string"
+                          },
+                          "itemId": {
+                            "type": "string"
+                          },
+                          "itemCode": {
+                            "type": "string",
+                            "description": "Marketplace Sku Code"
+                          },
+                          "productName": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "number"
+                          },
+                          "refundAmount": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "description": "data",
+                  "required": []
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/return-order/putBackStock/items": {
+      "get": {
+        "tags": [
+          "Return Order"
+        ],
+        "summary": "Get Return Order Put Back Item Info",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to g</span>et the corresponding bound Master item information of the return order. Only \"Return\" type and \"Completed\" status orders support putting back stock. Item will automatically be converted to bundled child products if it is a bundled product.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "returnOrderId",
+            "in": "query",
+            "required": true,
+            "description": "Desty Omnichannel internal Return Order ID retrieved from List Return Order API, not marketplace ID",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuId": {
+                        "type": "string"
+                      },
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "skuCode"
+                      },
+                      "quantity": {
+                        "type": "number",
+                        "description": "The original quantity included in the order"
+                      }
+                    }
+                  },
+                  "description": "Returnable Items"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/return-order/page": {
+      "post": {
+        "tags": [
+          "Return Order"
+        ],
+        "summary": "List Return Order",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to retrieve multiple return order information from Desty Omnichannel. The information provided is not as complete as the Return Order Detail. Use List Return Order API to retrieve orderId then subsequently request GET Return Order Detail API.</span>",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "platform": {
+                  "type": "string",
+                  "description": "Supported marketplace name: lazada, tokopedia, shopee, tiktok, blibli, zalora, destyStore, destyPos"
+                },
+                "returnType": {
+                  "type": "string",
+                  "description": "Return order type. Available value: Return / Refund / Replacement"
+                },
+                "startDate": {
+                  "type": "number",
+                  "mock": {
+                    "mock": "@timestamp"
+                  },
+                  "description": "Return order create time (Start time) using unix timestamp in milliseconds"
+                },
+                "endDate": {
+                  "type": "number",
+                  "description": "Return order create time (Finish time) using unix timestamp in milliseconds"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "Return order status. Available value: Pending / Processing / InDispute / Completed / Cancelled"
+                },
+                "pageNumber": {
+                  "type": "integer",
+                  "description": "The number of the pages. Counting starts from 1"
+                },
+                "pageSize": {
+                  "type": "integer",
+                  "description": "The number of orders within a page. Already set to 500 by default."
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "pageNumber": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer",
+                      "description": "Maximum pageSize is set to 500 by default"
+                    },
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "returnOrderId": {
+                            "type": "string"
+                          },
+                          "returnOrderSn": {
+                            "type": "string"
+                          },
+                          "returnType": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "orderId": {
+                            "type": "string",
+                            "description": "The original orderId associated with the return order"
+                          },
+                          "orderSn": {
+                            "type": "string",
+                            "description": "The original order serial number associated with the return order"
+                          },
+                          "orderCreateTime": {
+                            "type": "number",
+                            "mock": {
+                              "mock": "@timestamp"
+                            },
+                            "description": "timestamp"
+                          },
+                          "orderUpdateTime": {
+                            "type": "number",
+                            "description": "timestamp",
+                            "mock": {
+                              "mock": "@timestamp"
+                            }
+                          },
+                          "platformName": {
+                            "type": "string"
+                          },
+                          "storeId": {
+                            "type": "string"
+                          },
+                          "storeName": {
+                            "type": "string"
+                          },
+                          "initiator": {
+                            "type": "string",
+                            "description": "Return Initiator"
+                          },
+                          "reason": {
+                            "type": "string"
+                          },
+                          "buyerName": {
+                            "type": "string"
+                          },
+                          "courier": {
+                            "type": "string"
+                          },
+                          "shipmentNo": {
+                            "type": "string"
+                          },
+                          "refundAmount": {
+                            "type": "number"
+                          },
+                          "compensationAmount": {
+                            "type": "number"
+                          },
+                          "actionDeadline": {
+                            "type": "number",
+                            "description": "timestamp",
+                            "mock": {
+                              "mock": "@timestamp"
+                            }
+                          },
+                          "closeDeadline": {
+                            "type": "number",
+                            "description": "timestamp",
+                            "mock": {
+                              "mock": "@timestamp"
+                            }
+                          },
+                          "isStockReturned": {
+                            "type": "boolean",
+                            "description": "Whether putting back stock in Omni has been processed"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/return-order/putBackStock": {
+      "post": {
+        "tags": [
+          "Return Order"
+        ],
+        "summary": "Return Order Put Back Stock",
+        "description": "<span class=\"colour\" style=\"color:rgb(0, 0, 0)\">API to e</span>xecute product returns for the specified return order. <span class=\"colour\" style=\"color:rgb(85, 85, 85)\">Only \"Return\" type and \"Completed\" status orders support putting back stock.</span> The returned items must be included in the Get Return Order Put Back Item Info and the return quantity must be less than or equal to the original order quantity.",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization (Only:undefined)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "returnOrderId": {
+                  "type": "string",
+                  "description": "Desty Omnichannel internal Return Order ID retrieved from List Return Order API, not marketplace ID"
+                },
+                "warehouseId": {
+                  "type": "string",
+                  "description": "warehouse id, only warehouse_id retrieved on externalWarehouseId will be authenticated, mapped, and allowed to put back stock"
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "skuCode"
+                      },
+                      "putBackQuantity": {
+                        "type": "number",
+                        "description": "Quantity returned"
+                      },
+                      "unitCost": {
+                        "type": "number",
+                        "description": "Required for FIFO/Average user"
+                      }
+                    },
+                    "required": [
+                      "skuNumber",
+                      "putBackQuantity"
+                    ]
+                  },
+                  "description": "List of returned items"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "required": [
+                "returnOrderId",
+                "warehouseId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "boolean",
+                  "description": "true or false. true = API response is successfully received; false = API response is failed"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/stock/slot/adjust": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Adjust Slot Stock",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "externalWarehouseId": {
+                  "type": "string"
+                },
+                "adjustType": {
+                  "type": "string",
+                  "description": "SYNC、ADD、MINUS"
+                },
+                "skus": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string"
+                      },
+                      "uom": {
+                        "type": "string"
+                      },
+                      "slots": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "slotId": {
+                              "type": "number"
+                            },
+                            "quantity": {
+                              "type": "number",
+                              "description": "SYNC :quantity is final value, ADD: quantity is change value, MINUS : quantity is change value"
+                            },
+                            "uom": {
+                              "type": "string",
+                              "description": " If `slots[].uom` has a value, use `slots[].uom` as the first priority.If `slots[].uom` has no value, use `skus[].uom`.  If neither has a value, treat it as the base unit."
+                            },
+                            "unitCost": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "slotId",
+                            "quantity"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "skuNumber",
+                      "slots"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "externalWarehouseId",
+                "adjustType",
+                "skus"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "failureList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "slotId": {
+                            "type": "number"
+                          },
+                          "skuNumber": {
+                            "type": "string"
+                          },
+                          "reason": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/stock/sync": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Sync Product Stock",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "warehouseId": {
+                  "type": "string",
+                  "description": "warehouse id, only warehouse_id retrieved on externalWarehouseId will be authenticated, mapped, and allowed to adjust the stock"
+                },
+                "stocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "Master Product SKU Code"
+                      },
+                      "onHandStock": {
+                        "type": "number",
+                        "description": "Warehouse on-hand stock for adjustment"
+                      },
+                      "productName": {
+                        "type": "string",
+                        "description": "Corresponding product name"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "Corresponding product id"
+                      },
+                      "receivedDate": {
+                        "type": "string",
+                        "description": "Inventory inbound date"
+                      },
+                      "storedDate": {
+                        "type": "string",
+                        "description": "Inventory stored date"
+                      },
+                      "expiredDate": {
+                        "type": "string",
+                        "description": "Storing expiry date"
+                      },
+                      "uom": {
+                        "type": "string",
+                        "description": "uom"
+                      }
+                    },
+                    "required": []
+                  },
+                  "description": "stockmax array size is 200"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "failureList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "skuNumber": {
+                            "type": "string",
+                            "description": "skuNumber"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "reason"
+                          }
+                        }
+                      },
+                      "description": "failureList is empty,means all have successd"
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/stock/add": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Increase Product Stock",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "warehouseId": {
+                  "type": "string",
+                  "description": "warehouse id, only warehouse_id retrieved on externalWarehouseId will be authenticated, mapped, and allowed to adjust the stock"
+                },
+                "stocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "Master Product SKU Code"
+                      },
+                      "stockAdjustment": {
+                        "type": "number",
+                        "description": "Warehouse on-hand stock adjustment, Greater than or equal to 0"
+                      },
+                      "unitCost": {
+                        "type": "number",
+                        "description": "Corresponding Unit Cost Greater than or equal to 0, Required when using cost calculation method"
+                      },
+                      "productName": {
+                        "type": "string",
+                        "description": "Corresponding product name"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "Corresponding product id"
+                      },
+                      "receivedDate": {
+                        "type": "string",
+                        "description": "Inventory inbound date"
+                      },
+                      "storedDate": {
+                        "type": "string",
+                        "description": "Inventory stored date"
+                      },
+                      "expiredDate": {
+                        "type": "string",
+                        "description": "Storing expiry date"
+                      },
+                      "uom": {
+                        "type": "string",
+                        "description": "uom"
+                      }
+                    },
+                    "required": [
+                      "skuNumber",
+                      "stockAdjustment"
+                    ]
+                  },
+                  "description": "stockmax array size is 200"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "required": [
+                "warehouseId",
+                "stocks"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "failureList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "skuNumber": {
+                            "type": "string",
+                            "description": "skuNumber"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "reason"
+                          }
+                        }
+                      },
+                      "description": "failureList is empty,means all have successd"
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/stock/minus": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "Decrease Product Stock",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "warehouseId": {
+                  "type": "string",
+                  "description": "warehouse id, only warehouse_id retrieved on externalWarehouseId will be authenticated, mapped, and allowed to adjust the stock"
+                },
+                "stocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string",
+                        "description": "Master Product SKU Code"
+                      },
+                      "stockAdjustment": {
+                        "type": "number",
+                        "description": "Warehouse on-hand stock adjustment, Greater than or equal to 0"
+                      },
+                      "productName": {
+                        "type": "string",
+                        "description": "Corresponding product name"
+                      },
+                      "productId": {
+                        "type": "string",
+                        "description": "Corresponding product id"
+                      },
+                      "receivedDate": {
+                        "type": "string",
+                        "description": "Inventory inbound date"
+                      },
+                      "storedDate": {
+                        "type": "string",
+                        "description": "Inventory stored date"
+                      },
+                      "expiredDate": {
+                        "type": "string",
+                        "description": "Storing expiry date"
+                      },
+                      "uom": {
+                        "type": "string",
+                        "description": "uom"
+                      }
+                    },
+                    "required": [
+                      "skuNumber",
+                      "stockAdjustment"
+                    ]
+                  },
+                  "description": "stockmax array size is 200"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "required": [
+                "warehouseId",
+                "stocks"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "failureList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "skuNumber": {
+                            "type": "string",
+                            "description": "skuNumber"
+                          },
+                          "reason": {
+                            "type": "string",
+                            "description": "reason"
+                          }
+                        }
+                      },
+                      "description": "failureList is empty,means all have successd"
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/purchase/page": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "GET Inventory Transfer List",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pageNumber": {
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "type": "integer"
+                },
+                "type": {
+                  "type": "string",
+                  "description": "orderType SUPPLIER_PURCHASE、INTERNAL_TRANSFER"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "orderStatus   Pending、Partial、Completed、Closed"
+                },
+                "startDate": {
+                  "type": "string",
+                  "mock": {
+                    "mock": "@datetime"
+                  },
+                  "description": "startDate"
+                },
+                "endDate": {
+                  "type": "string",
+                  "mock": {
+                    "mock": "@datetime"
+                  },
+                  "description": "endDate"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "required": [
+                "pageNumber",
+                "pageSize"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "pageNumber": {
+                      "type": "integer"
+                    },
+                    "pageSize": {
+                      "type": "integer"
+                    },
+                    "totalCount": {
+                      "type": "integer"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "orderId": {
+                            "type": "string"
+                          },
+                          "orderSn": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string",
+                            "description": "SUPPLIER_PURCHASE、INTERNAL_TRANSFER"
+                          },
+                          "createTime": {
+                            "type": "string"
+                          },
+                          "transferOriginExternalWarehouseId": {
+                            "type": "string"
+                          },
+                          "transferOrigin": {
+                            "type": "string"
+                          },
+                          "transferDestinationExternalWarehouseId": {
+                            "type": "string"
+                          },
+                          "transferDestination": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/purchase/detail": {
+      "get": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "GET Inventory Transfer Detail",
+        "description": "",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": true,
+            "description": "",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "orderId": {
+                      "type": "integer",
+                      "description": "orderId"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "orderType\nSUPPLIER_PURCHASE  INTERNAL_TRANSFER"
+                    },
+                    "orderSn": {
+                      "type": "string",
+                      "description": "orderSn"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "status  Pending、Partial、Completed、Closed"
+                    },
+                    "transferOriginExternalWarehouseId": {
+                      "type": "string"
+                    },
+                    "transferOrigin": {
+                      "type": "string",
+                      "description": "originalName"
+                    },
+                    "transferDestinationExternalWarehouseId": {
+                      "type": "string"
+                    },
+                    "transferDestination": {
+                      "type": "string",
+                      "description": "targetName"
+                    },
+                    "shippingDate": {
+                      "type": "string",
+                      "description": "shippingDate",
+                      "mock": {
+                        "mock": "@datetime"
+                      }
+                    },
+                    "shippingCourier": {
+                      "type": "string",
+                      "description": "shippingCourier"
+                    },
+                    "paymentMethod": {
+                      "type": "string",
+                      "description": "paymentMethod"
+                    },
+                    "note": {
+                      "type": "string",
+                      "description": "note"
+                    },
+                    "subTotal": {
+                      "type": "number",
+                      "description": "subTotal"
+                    },
+                    "discountPrice": {
+                      "type": "number",
+                      "description": "discountPrice"
+                    },
+                    "discountPercentage": {
+                      "type": "number",
+                      "description": "discountPercentage"
+                    },
+                    "totalQuantity": {
+                      "type": "number",
+                      "description": "totalQuantity"
+                    },
+                    "purchaseTax": {
+                      "type": "number",
+                      "description": "purchaseTax"
+                    },
+                    "totalPrice": {
+                      "type": "number",
+                      "description": "totalPrice"
+                    },
+                    "taxType": {
+                      "type": "string",
+                      "description": "taxType"
+                    },
+                    "taxPercentage": {
+                      "type": "number",
+                      "description": "taxPercentage"
+                    },
+                    "supplier": {
+                      "type": "object",
+                      "properties": {
+                        "supplierName": {
+                          "type": "string"
+                        },
+                        "addressInfo": {
+                          "type": "object",
+                          "properties": {
+                            "city": {
+                              "type": "string"
+                            },
+                            "province": {
+                              "type": "string"
+                            },
+                            "postalCode": {
+                              "type": "string"
+                            },
+                            "address": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "contactInfo": {
+                          "type": "object",
+                          "properties": {
+                            "contactName": {
+                              "type": "string"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      },
+                      "required": []
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "skuId": {
+                            "type": "integer"
+                          },
+                          "productName": {
+                            "type": "string"
+                          },
+                          "variantName": {
+                            "type": "string"
+                          },
+                          "mainImageUrl": {
+                            "type": "string"
+                          },
+                          "masterSku": {
+                            "type": "string"
+                          },
+                          "barcode": {
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "number",
+                            "default": "public static final BigDecimal ZERO;"
+                          },
+                          "acceptQuantity": {
+                            "type": "number"
+                          },
+                          "originalPrice": {
+                            "type": "number",
+                            "default": "public static final BigDecimal ZERO;"
+                          },
+                          "discountPercentage": {
+                            "type": "number",
+                            "default": "public static final BigDecimal ZERO;"
+                          },
+                          "discountPrice": {
+                            "type": "number",
+                            "default": "public static final BigDecimal ZERO;"
+                          },
+                          "subTotal": {
+                            "type": "number",
+                            "default": "public static final BigDecimal ZERO;"
+                          }
+                        }
+                      },
+                      "description": "items"
+                    }
+                  },
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "description": ""
+            }
+          }
+        }
+      }
+    },
+    "/api/inventory/purchase/edit": {
+      "post": {
+        "tags": [
+          "Inventory"
+        ],
+        "summary": "POST Edit Inventory Transfer",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "orderId": {
+                  "type": "number",
+                  "description": "transferOrderId"
+                },
+                "action": {
+                  "type": "string",
+                  "description": "\"inbound\" or \"close\" or \"complete\""
+                },
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "skuNumber": {
+                        "type": "string"
+                      },
+                      "acceptQuantity": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "skuNumber",
+                      "acceptQuantity"
+                    ]
+                  },
+                  "description": "Items represents the inbound products. Empty is not allowed when action is inbound"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "required": [
+                "action",
+                "orderId"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "code"
+                },
+                "msg": {
+                  "type": "string",
+                  "description": "msg"
+                },
+                "data": {
+                  "type": "boolean",
+                  "description": "data"
+                }
+              },
+              "$schema": "http://json-schema.org/draft-04/schema#"
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouse/shelf/add": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Add Shelf",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "externalWarehouseId": {
+                  "type": "string"
+                },
+                "shelfName": {
+                  "type": "string",
+                  "description": "The length of shelfName ranges from a minimum of 1 to a maximum of 30."
+                }
+              },
+              "required": [
+                "externalWarehouseId",
+                "shelfName"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "shelfId": {
+                      "type": "number"
+                    },
+                    "shelfName": {
+                      "type": "string"
+                    },
+                    "masterWarehouseId": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouse/slot/add": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Add Slot",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "externalWarehouseId": {
+                  "type": "string"
+                },
+                "shelfId": {
+                  "type": "number"
+                },
+                "slotName": {
+                  "type": "string",
+                  "description": "The length of slotName ranges from a minimum of 1 to a maximum of 15."
+                }
+              },
+              "required": [
+                "externalWarehouseId",
+                "shelfId",
+                "slotName"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "slotId": {
+                      "type": "number"
+                    },
+                    "slotName": {
+                      "type": "string"
+                    },
+                    "shelfId": {
+                      "type": "number"
+                    },
+                    "shelfName": {
+                      "type": "string"
+                    },
+                    "masterWarehouseId": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouse/slot/allocate": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Allocate Slot",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "externalWarehouseId": {
+                  "type": "string"
+                },
+                "allocations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "slotId": {
+                        "type": "number"
+                      },
+                      "skuNumbers": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "required": [
+                      "slotId",
+                      "skuNumbers"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "externalWarehouseId",
+                "allocations"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "failureList": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "slotId": {
+                            "type": "number"
+                          },
+                          "reason": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouse/list": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "List warehouse information",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "pageNumber": {
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "pageSize",
+                "pageNumber"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "title": "empty object",
+              "properties": {
+                "pageNumber": {
+                  "type": "integer"
+                },
+                "pageSize": {
+                  "type": "integer"
+                },
+                "totalCount": {
+                  "type": "integer"
+                },
+                "totalPages": {
+                  "type": "integer"
+                },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "externalWarehouseId": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "partner": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string"
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "province": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      },
+                      "platformWarehouses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "platformWarehouseId": {
+                              "type": "string"
+                            },
+                            "platformWarehouseName": {
+                              "type": "string"
+                            },
+                            "platformWarehouseAddress": {
+                              "type": "string"
+                            },
+                            "platformStoreId": {
+                              "type": "string"
+                            },
+                            "platformName": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouse/shelf/list": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Query Shelf List",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "externalWarehouseId": {
+                  "type": "string"
+                },
+                "keyword": {
+                  "type": "string"
+                },
+                "pageNumber": {
+                  "type": "number"
+                },
+                "pageSize": {
+                  "type": "number",
+                  "description": "Max: 200"
+                }
+              },
+              "required": [
+                "externalWarehouseId",
+                "pageNumber",
+                "pageSize"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "pageNumber": {
+                      "type": "number"
+                    },
+                    "pageSize": {
+                      "type": "number"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "shelfId": {
+                            "type": "number"
+                          },
+                          "shelfName": {
+                            "type": "string"
+                          },
+                          "masterWarehouseId": {
+                            "type": "number"
+                          },
+                          "slotCount": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    },
+                    "totalCount": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/warehouse/slot/list": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Query Slot List",
+        "description": "",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "root",
+            "in": "body",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "externalWarehouseId": {
+                  "type": "string"
+                },
+                "shelfId": {
+                  "type": "number"
+                },
+                "keyword": {
+                  "type": "string"
+                },
+                "pageNumber": {
+                  "type": "number"
+                },
+                "pageSize": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "externalWarehouseId",
+                "pageNumber",
+                "pageSize"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$schema": "http://json-schema.org/draft-04/schema#",
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "msg": {
+                  "type": "null"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "pageNumber": {
+                      "type": "number"
+                    },
+                    "pageSize": {
+                      "type": "number"
+                    },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "slotId": {
+                            "type": "number"
+                          },
+                          "slotName": {
+                            "type": "string"
+                          },
+                          "shelfId": {
+                            "type": "number"
+                          },
+                          "masterWarehouseId": {
+                            "type": "number"
+                          },
+                          "allocatedProducts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "productId": {
+                                  "type": "number"
+                                },
+                                "skuNumber": {
+                                  "type": "string"
+                                },
+                                "productName": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "totalCount": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
