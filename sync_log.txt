@@ -1174,4 +1174,4 @@ KeyboardInterrupt
 [20:02:01] Counts: ready=152, processed=136, toProcess=16
 [20:03:00] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [20:03:00] Done! New: 0, Updated: 94
-^C^C
+^C^C^C
