@@ -1333,4 +1333,20 @@ KeyboardInterrupt
 [00:00:01] Counts: ready=122, processed=122, toProcess=0
 [00:00:04] Page 1 error: Expecting value: line 1 column 1 (char 0)
 [00:00:04] Done! New: 0, Updated: 4
-^C^C
+^C^C[00:16:01] Starting Desty sync...
+[00:16:01] Counts: ready=124, processed=123, toProcess=1
+[00:16:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[00:16:02] Done! New: 0, Updated: 0
+[00:18:01] Starting Desty sync...
+[00:18:01] Counts: ready=124, processed=124, toProcess=0
+[00:18:01] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[00:18:01] Done! New: 0, Updated: 0
+^C^C[00:26:04] Starting Desty sync...
+[00:26:04] Counts: ready=123, processed=123, toProcess=0
+[00:26:30] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[00:26:30] Done! New: 0, Updated: 15
+[00:34:38] Starting Desty sync...
+[00:34:38] Counts: ready=123, processed=123, toProcess=0
+[00:34:52] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[00:34:52] Done! New: 0, Updated: 16
+^C
