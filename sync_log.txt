@@ -642,3 +642,20 @@ KeyboardInterrupt
 [11:16:01] Counts: ready=286, processed=283, toProcess=3
 [11:16:58] Page 2 error: Expecting value: line 1 column 1 (char 0)
 [11:16:58] Done! New: 0, Updated: 81
+[11:22:00] Starting Desty sync...
+[11:22:00] Counts: ready=287, processed=283, toProcess=4
+[11:23:15] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:23:15] Done! New: 0, Updated: 82
+^C[11:26:00] Starting Desty sync...
+[11:26:00] Counts: ready=287, processed=283, toProcess=4
+[11:26:57] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:26:57] Done! New: 0, Updated: 83
+[11:28:00] Starting Desty sync...
+[11:28:00] Counts: ready=289, processed=283, toProcess=6
+[11:28:51] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:28:51] Done! New: 0, Updated: 84
+^C^C[11:34:00] Starting Desty sync...
+[11:34:00] Counts: ready=290, processed=283, toProcess=7
+[11:35:20] Page 2 error: Expecting value: line 1 column 1 (char 0)
+[11:35:20] Done! New: 0, Updated: 85
+^C

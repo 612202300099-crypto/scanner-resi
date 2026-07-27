@@ -1,43 +1,31 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import dayjs from 'dayjs';
-import { PackageOpen, PackageCheck, AlertTriangle, Users, Database, Truck, ClipboardList } from 'lucide-react';
-import { getDailyShippingStats, type DailyShippingStats } from '../services/destyService';
+import { PackageOpen, PackageCheck, AlertTriangle, Users, Database } from 'lucide-react';
 
 export default function Dashboard({ userRole }: { userRole: 'admin' | 'staff' | null }) {
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({
-        masukToday: 0,
-        keluarToday: 0,
-        returToday: 0,
-        totalUsers: 0
+        masukToday: 0, keluarToday: 0, returToday: 0, totalUsers: 0
     });
-
-    const [destyStats, setDestyStats] = useState<DailyShippingStats | null>(null);
 
     const fetchStats = async () => {
         setLoading(true);
         try {
             const todayDate = dayjs().format('YYYY-MM-DD');
-
-            const [resMasuk, resKeluar, resRetur, resUsers, destyData] = await Promise.all([
+            const [resMasuk, resKeluar, resRetur] = await Promise.all([
                 supabase.from('scans').select('*', { count: 'exact', head: true }).eq('scanned_date', todayDate).eq('status', 'MASUK'),
                 supabase.from('scans').select('*', { count: 'exact', head: true }).eq('scanned_date', todayDate).eq('status', 'KELUAR'),
                 supabase.from('scans').select('*', { count: 'exact', head: true }).eq('scanned_date', todayDate).eq('status', 'RETUR'),
-                supabase.rpc('get_unique_users_today', { date_param: todayDate }),
-                getDailyShippingStats().catch(() => null),
             ]);
-
             setStats({
                 masukToday: resMasuk.count || 0,
                 keluarToday: resKeluar.count || 0,
                 returToday: resRetur.count || 0,
-                totalUsers: resUsers.data ? resUsers.data.length : 1,
+                totalUsers: 1,
             });
-
-            setDestyStats(destyData);
         } catch (error) {
-            console.error('Error memuat papan kendali info', error);
+            console.error('Error loading dashboard', error);
         } finally {
             setLoading(false);
         }
@@ -102,42 +90,7 @@ export default function Dashboard({ userRole }: { userRole: 'admin' | 'staff' | 
                 </div>
             </div>
 
-            {/* DESTY OMNI INTEGRATION STATS */}
-            {destyStats && (
-                <div className="card" style={{ marginBottom: '2rem', borderTop: '4px solid #6366f1', background: 'white' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <Truck size={24} color="#6366f1" />
-                        <h2 style={{ fontSize: '1.1rem', fontWeight: 800, margin: 0, color: '#4f46e5' }}>
-                            📊 Status Pengiriman Order Marketplace (Desty Omni)
-                        </h2>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
-                        <div style={{ textAlign: 'center', padding: '1rem', background: '#f5f3ff', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#7c3aed', fontWeight: 700 }}>Total Order</div>
-                            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#4f46e5' }}>{destyStats.total_orders}</div>
-                        </div>
-                        <div style={{ textAlign: 'center', padding: '1rem', background: '#ecfdf5', borderRadius: '8px' }}>
-                            <ClipboardList size={20} color="#10b981" />
-                            <div style={{ fontSize: '0.8rem', color: '#047857', fontWeight: 700 }}>Sudah Clear</div>
-                            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#10b981' }}>{destyStats.shipped_orders}</div>
-                        </div>
-                        <div style={{ textAlign: 'center', padding: '1rem', background: '#fef3c7', borderRadius: '8px' }}>
-                            <div style={{ fontSize: '0.8rem', color: '#92400e', fontWeight: 700 }}>Belum Dikirim</div>
-                            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#d97706' }}>{destyStats.pending_orders}</div>
-                        </div>
-                    </div>
-                    {/* Progress bar */}
-                    <div style={{ marginTop: '1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.3rem' }}>
-                            <span>Progress</span>
-                            <span>{destyStats.total_orders > 0 ? Math.round((destyStats.shipped_orders / destyStats.total_orders) * 100) : 0}%</span>
-                        </div>
-                        <div style={{ height: '10px', background: '#e2e8f0', borderRadius: '5px', overflow: 'hidden' }}>
-                            <div style={{ height: '100%', width: `${destyStats.total_orders > 0 ? (destyStats.shipped_orders / destyStats.total_orders) * 100 : 0}%`, background: destyStats.pending_orders === 0 ? 'var(--success)' : '#6366f1', borderRadius: '5px', transition: 'width 0.5s' }} />
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* DESTY OMNI — managed from Shipping Board */}
 
             <div className="card" style={{ border: '1px solid var(--border)', background: 'white' }}>
                 <h2 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', fontWeight: 800 }}>Sinkronisasi Segar</h2>

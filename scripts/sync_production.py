@@ -100,3 +100,36 @@ for page in range(1, 8):
 final = safe_req(f"{SUPABASE_URL}/rest/v1/orders?select=count&order_status=eq.Processed")
 total = final[0]['count'] if final else 0
 print(f"✅ Done! Production: {total} orders (new:{synced} upd:{updated} err:{errors})")
+
+# Sync Desty counts
+try:
+    r = urllib.request.Request("https://omni.desty.app/api/order-center/package/status/count",
+        data=json.dumps({}).encode(), headers=desty_h, method="POST")
+    with urllib.request.urlopen(r, timeout=10) as resp:
+        cd = json.loads(resp.read().decode()).get("data", {})
+    counts = {
+        "id": 1,
+        "ready_to_ship": int(cd.get("readyToShip", 0)),
+        "processed": int(cd.get("processed", 0)),
+        "to_process": int(cd.get("toProcess", 0)),
+        "in_delivery": int(cd.get("inDelivery", 0)),
+        "delivered": int(cd.get("delivered", 0)),
+        "shipping": int(cd.get("shipping", 0)),
+        "unpaid": int(cd.get("unpaid", 0)),
+        "updated_at": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+    }
+    # Check if counts row exists
+    check = safe_req(f"{SUPABASE_URL}/rest/v1/desty_counts?id=eq.1&select=id")
+    if check and len(check) > 0:
+        safe_req(f"{SUPABASE_URL}/rest/v1/desty_counts?id=eq.1", data=json.dumps(counts).encode(), method="PATCH")
+    else:
+        safe_req(f"{SUPABASE_URL}/rest/v1/desty_counts", data=json.dumps(counts).encode(), method="POST")
+    print(f"📊 Counts synced: ready={counts['ready_to_ship']}, proc={counts['processed']}, deliv={counts['delivered']}")
+except Exception as e:
+    print(f"⚠️ Counts sync failed: {e}")
+
+# Log sync
+try:
+    log_data = {"status": "completed", "new_orders": synced, "updated_orders": updated, "finished_at": time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}
+    safe_req(f"{SUPABASE_URL}/rest/v1/desty_sync_log", data=json.dumps(log_data).encode(), method="POST")
+except: pass
