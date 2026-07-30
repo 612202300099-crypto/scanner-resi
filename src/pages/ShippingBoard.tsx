@@ -295,6 +295,7 @@ export default function ShippingBoard() {
                   </div>
                   <div style={{ display: 'flex', gap: '0.3rem', fontSize: '0.7rem', fontWeight: 700 }}>
                     <span style={{ color: '#16a34a', background: '#dcfce7', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>✅{d.clear}</span>
+                    <span style={{ color: '#92400e', background: '#fef3c7', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>⏳{d.belum}</span>
                     <span style={{ color: '#dc2626', background: '#fef2f2', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>⛔{d.terlambatGudang}</span>
                     <span style={{ color: '#991b1b', background: '#fee2e2', padding: '0.15rem 0.4rem', borderRadius: '4px' }}>🔴{d.terlambatPlatform}</span>
                   </div>
