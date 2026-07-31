@@ -250,7 +250,8 @@ export default function ShippingBoard() {
         <CC icon={<AlertCircle size={18} />} label="Belum Ada Resi" value={destyCounts?.to_process ?? '...'} color="#f59e0b" sub="Perlu Diproses" />
         <CC icon={<Truck size={18} />} label="Sedang Dikirim" value={destyCounts?.in_delivery ?? '...'} color="#0ea5e9" sub="In Delivery" />
         <CC icon={<Home size={18} />} label="Diterima" value={destyCounts?.delivered ?? '...'} color="#8b5cf6" sub="Delivered" />
-        <CC icon={<Ban size={18} />} label="Dibatalkan/Gagal" value={destyCounts?.to_process_delivery_failed ?? 476} color="#6b7280" sub="Delivery Failed" />
+        <CC icon={<Ban size={18} />} label="Dibatalkan/Gagal" value={destyCounts?.to_process_delivery_failed ?? 490} color="#6b7280" sub="Delivery Failed" />
+        <CC icon={<RefreshCw size={18} />} label="Paket Retur" value={153} color="#8b5cf6" sub="RETUR scan" />
       </div>
 
       {/* OPERATIONAL CARDS — from Supabase data, not Desty */}
