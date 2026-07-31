@@ -38,6 +38,7 @@ except Exception as e:
 
 # === 2. ORDERS (slower, skip if unchanged) ===
 synced, updated, errors = 0, 0, 0
+desty_ids = set()
 existing_ids = set()
 result = safe_req(f"{SUPABASE_URL}/rest/v1/orders?select=desty_order_id&order_status=eq.Processed")
 if result: existing_ids = set(o['desty_order_id'] for o in result)
@@ -103,7 +104,7 @@ for page in range(1, 8):
 
 final = safe_req(f"{SUPABASE_URL}/rest/v1/orders?select=count&order_status=eq.Processed")
 total = final[0]['count'] if final else 0
-print(f"✅ Done! Orders: new={synced} upd={updated} errors={errs}")
+print(f"✅ Done! Orders: new={synced} upd={updated} errors={errors}")
 
 # Mark stale orders (no longer in Desty Processed list) as Not_Found
 if desty_ids:
