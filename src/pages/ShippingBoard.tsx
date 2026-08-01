@@ -56,6 +56,7 @@ export default function ShippingBoard() {
   const [deadlineTo, setDeadlineTo] = useState(todayWIB());
   const [searchQuery, setSearchQuery] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
+  const [storeFilter, setStoreFilter] = useState('all');
 
   // UI state
   const [expandedPkg, setExpandedPkg] = useState<string | null>(null);
@@ -158,6 +159,7 @@ export default function ShippingBoard() {
   const filteredPackages = useMemo(() => {
     let f = [...readyPackages];
     if (platformFilter !== 'all') f = f.filter(p => p.platform === platformFilter);
+    if (storeFilter !== 'all') f = f.filter(p => p.shopName === storeFilter);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       f = f.filter(p =>
@@ -167,7 +169,7 @@ export default function ShippingBoard() {
       );
     }
     return f;
-  }, [readyPackages, platformFilter, searchQuery]);
+  }, [readyPackages, platformFilter, storeFilter, searchQuery]);
 
   // 4. Card metrics
   const totalReady = readyPackages.length;
@@ -214,6 +216,7 @@ export default function ShippingBoard() {
   // Pagination + table
   const paged = filteredPackages.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
   const platforms = [...new Set(packages.map(p => p.platform))].sort();
+  const stores = [...new Set(packages.map(p => p.shopName))].filter(s => s !== '?').sort();
 
   const exportCSV = () => {
     const rows = [['Toko', 'Platform', 'Order SN', 'Customer', 'Resi', 'Total', 'Tgl Order', 'Deadline', 'Scan']];
@@ -334,6 +337,10 @@ export default function ShippingBoard() {
         <select className="input" value={platformFilter} onChange={e => { setPlatformFilter(e.target.value); setPage(0); }} style={{ width: 'auto' }}>
           <option value="all">Semua Platform</option>
           {platforms.map(p => <option key={p} value={p}>{(ICONS[p] || '')} {p}</option>)}
+        </select>
+        <select className="input" value={storeFilter} onChange={e => { setStoreFilter(e.target.value); setPage(0); }} style={{ width: 'auto' }}>
+          <option value="all">Semua Toko</option>
+          {stores.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{filteredPackages.length} paket</span>
       </div>
