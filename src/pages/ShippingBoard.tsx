@@ -52,8 +52,8 @@ export default function ShippingBoard() {
   // UNIFIED FILTER STATE
   const [orderDateFrom, setOrderDateFrom] = useState('');
   const [orderDateTo, setOrderDateTo] = useState('');
-  const [deadlineFrom, setDeadlineFrom] = useState(todayWIB());
-  const [deadlineTo, setDeadlineTo] = useState(todayWIB());
+  const [deadlineFrom, setDeadlineFrom] = useState('');
+  const [deadlineTo, setDeadlineTo] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [platformFilter, setPlatformFilter] = useState('all');
   const [storeFilter, setStoreFilter] = useState('all');
@@ -327,8 +327,8 @@ export default function ShippingBoard() {
         <input type="date" className="input" value={deadlineFrom} onChange={e => { setDeadlineFrom(e.target.value); setPage(0); }} style={{ width: 'auto' }} />
         <span style={{ color: 'var(--text-muted)' }}>s/d</span>
         <input type="date" className="input" value={deadlineTo} onChange={e => { setDeadlineTo(e.target.value); setPage(0); }} style={{ width: 'auto' }} />
-        {(orderDateFrom || orderDateTo || deadlineFrom !== todayWIB() || deadlineTo !== todayWIB()) && (
-          <button onClick={() => { setOrderDateFrom(''); setOrderDateTo(''); setDeadlineFrom(todayWIB()); setDeadlineTo(todayWIB()); }} className="btn btn-sm" style={{ fontSize: '0.7rem' }}><X size={12} /> Reset</button>
+        {(orderDateFrom || orderDateTo || deadlineFrom || deadlineTo) && (
+          <button onClick={() => { setOrderDateFrom(''); setOrderDateTo(''); setDeadlineFrom(''); setDeadlineTo(''); }} className="btn btn-sm" style={{ fontSize: '0.7rem' }}><X size={12} /> Reset</button>
         )}
         <div style={{ position: 'relative', flex: '1 1 160px', marginLeft: 'auto' }}>
           <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', top: '50%', left: '0.6rem', transform: 'translateY(-50%)' }} />
