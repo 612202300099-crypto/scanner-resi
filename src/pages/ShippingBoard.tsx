@@ -232,6 +232,11 @@ export default function ShippingBoard() {
   };
 
   const ICONS: Record<string, string> = { tiktok: '🎵', shopee: '🛒', tokopedia: '🦉', lazada: '🛍️', blibli: '📚' };
+  const lastSyncMs = destyCounts?.updated_at ? new Date(destyCounts.updated_at).getTime() : 0;
+  const syncAgeMinutes = lastSyncMs ? Math.floor((Date.now() - lastSyncMs) / 60000) : null;
+  const syncStale = syncAgeMinutes === null || syncAgeMinutes > 10;
+  const lastSyncWib = lastSyncMs ? new Date(lastSyncMs + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 16) + ' WIB' : 'belum ada';
+  const syncSub = syncAgeMinutes === null ? 'belum sync' : syncAgeMinutes <= 1 ? 'sync baru' : `sync ${syncAgeMinutes}m lalu`;
 
   return (
     <div>
@@ -239,7 +244,7 @@ export default function ShippingBoard() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
         <div>
           <h1 className="page-title" style={{ margin: 0 }}>📋 Antrian Pengiriman</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Mengikuti filter aktif • {new Date(nowEpoch + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 16)} WIB</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Tampilan: {new Date(nowEpoch + 7 * 3600 * 1000).toISOString().replace('T', ' ').slice(0, 16)} WIB • Sync Desty terakhir: {lastSyncWib}</p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button onClick={exportCSV} className="btn btn-outline"><Download size={18} /> Export</button>
@@ -247,9 +252,15 @@ export default function ShippingBoard() {
         </div>
       </div>
 
+      {syncStale && (
+        <div className="card" style={{ marginBottom: '1rem', padding: '0.9rem 1rem', borderLeft: '4px solid #dc2626', background: '#fef2f2', color: '#991b1b', fontSize: '0.85rem' }}>
+          <strong>⚠️ Data Desty belum fresh.</strong> Sync terakhir {lastSyncWib}. Tombol Segarkan hanya memuat ulang database; jika sync cron telat, angka belum bisa dianggap live 100%.
+        </div>
+      )}
+
       {/* DESTY COUNT CARDS */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(130px,1fr))', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        <CC icon={<PackageSearch size={18} />} label="Total Paket Siap Dikirim" value={destyCounts?.ready_to_ship ?? '...'} color="#6366f1" sub="Desty live" />
+        <CC icon={<PackageSearch size={18} />} label="Total Paket Siap Dikirim" value={destyCounts?.ready_to_ship ?? '...'} color="#6366f1" sub={syncSub} />
         <CC icon={<PackageCheck size={18} />} label="Ada Resi" value={destyCounts?.processed ?? '...'} color="#16a34a" sub="Telah Diproses" />
         <CC icon={<AlertCircle size={18} />} label="Belum Ada Resi" value={destyCounts?.to_process ?? '...'} color="#f59e0b" sub="Perlu Diproses" />
         <CC icon={<Truck size={18} />} label="Sedang Dikirim" value={destyCounts?.in_delivery ?? '...'} color="#0ea5e9" sub="In Delivery" />
