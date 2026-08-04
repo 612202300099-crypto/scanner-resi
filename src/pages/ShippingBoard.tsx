@@ -62,6 +62,8 @@ export default function ShippingBoard() {
   const [expandedPkg, setExpandedPkg] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [detailPopup, setDetailPopup] = useState<{ title: string; pkgs: Package[] } | null>(null);
+  const [syncingDesty, setSyncingDesty] = useState(false);
+  const [syncMessage, setSyncMessage] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -131,6 +133,24 @@ export default function ShippingBoard() {
     } catch (e) { console.error(e); }
     setLoading(false);
   }, [orderDateFrom, orderDateTo]);
+
+  const syncDestyNow = useCallback(async () => {
+    if (syncingDesty) return;
+    setSyncingDesty(true);
+    setSyncMessage(null);
+    try {
+      const resp = await fetch('/api/sync-desty', { method: 'POST' });
+      const data = await resp.json().catch(() => null);
+      if (!resp.ok || !data?.success) throw new Error(data?.error || 'Sync gagal');
+      const r = data.result || {};
+      setSyncMessage(`✅ Sync Desty selesai: ${r.fetched ?? 0} paket, stale dibersihkan ${r.staleCleaned ?? 0}, durasi ${Math.round((r.durationMs ?? 0) / 1000)} detik.`);
+      await fetchData();
+    } catch (e: any) {
+      setSyncMessage(`❌ Sync Desty gagal: ${e?.message || e}`);
+    } finally {
+      setSyncingDesty(false);
+    }
+  }, [fetchData, syncingDesty]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -248,13 +268,20 @@ export default function ShippingBoard() {
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button onClick={exportCSV} className="btn btn-outline"><Download size={18} /> Export</button>
-          <button onClick={fetchData} className="btn btn-primary"><RefreshCw size={18} /> Segarkan</button>
+          <button onClick={fetchData} className="btn btn-outline"><RefreshCw size={18} /> Muat DB</button>
+          <button onClick={syncDestyNow} disabled={syncingDesty} className="btn btn-primary"><RefreshCw size={18} className={syncingDesty ? 'animate-spin' : ''} /> {syncingDesty ? 'Sync...' : 'Sync Desty Sekarang'}</button>
         </div>
       </div>
 
+      {syncMessage && (
+        <div className="card" style={{ marginBottom: '1rem', padding: '0.75rem 1rem', borderLeft: `4px solid ${syncMessage.startsWith('✅') ? '#16a34a' : '#dc2626'}`, fontSize: '0.85rem' }}>
+          {syncMessage}
+        </div>
+      )}
+
       {syncStale && (
         <div className="card" style={{ marginBottom: '1rem', padding: '0.9rem 1rem', borderLeft: '4px solid #dc2626', background: '#fef2f2', color: '#991b1b', fontSize: '0.85rem' }}>
-          <strong>⚠️ Data Desty belum fresh.</strong> Sync terakhir {lastSyncWib}. Tombol Segarkan hanya memuat ulang database; jika sync cron telat, angka belum bisa dianggap live 100%.
+          <strong>⚠️ Data Desty belum fresh.</strong> Sync terakhir {lastSyncWib}. Klik <strong>Sync Desty Sekarang</strong> untuk menarik data terbaru dari Desty. Tombol <strong>Muat DB</strong> hanya reload cache database.
         </div>
       )}
 
