@@ -54,6 +54,8 @@ for page in range(1, 8):
 
         for o in records:
             did = o.get("orderId", "")
+            if did:
+                desty_ids.add(did)
             try:
                 ts = o.get("orderCreateTime")
                 order_data = {"desty_order_id": did, "order_sn": o.get("displayedOrderSn", ""),

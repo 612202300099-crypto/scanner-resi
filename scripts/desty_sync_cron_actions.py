@@ -106,15 +106,18 @@ for page in range(1, 8):
 print(f"  📦 Orders: new={synced} upd={updated}")
 
 # 3. CLEANUP stale
-stale = 0
-for off in range(0, 2000, 100):
-    batch = safe_req(f"{SUPABASE_URL}/rest/v1/orders?select=id,desty_order_id&order_status=eq.Processed&limit=100&offset={off}")
+# IMPORTANT: collect first, patch later. If we PATCH while paging with offset,
+# PostgREST result set shrinks and records get skipped.
+all_processed = []
+for off in range(0, 5000, 1000):
+    batch = safe_req(f"{SUPABASE_URL}/rest/v1/orders?select=id,desty_order_id&order_status=eq.Processed&limit=1000&offset={off}")
     if not batch: break
-    for o in batch:
-        if o['desty_order_id'] not in desty_ids:
-            safe_req(f"{SUPABASE_URL}/rest/v1/orders?id=eq.{o['id']}", method="PATCH", data={"order_status":"Not_Found"})
-            stale += 1
-if stale: print(f"  🧹 Cleaned {stale} stale → Not_Found")
+    all_processed.extend(batch)
+    if len(batch) < 1000: break
+stale_rows = [o for o in all_processed if o.get('desty_order_id') not in desty_ids]
+for o in stale_rows:
+    safe_req(f"{SUPABASE_URL}/rest/v1/orders?id=eq.{o['id']}", method="PATCH", data={"order_status":"Not_Found"})
+if stale_rows: print(f"  🧹 Cleaned {len(stale_rows)} stale → Not_Found")
 
 final = safe_req(f"{SUPABASE_URL}/rest/v1/orders?select=count&order_status=eq.Processed")
 print(f"✅ Done: {final[0]['count'] if final else '?'} orders")
