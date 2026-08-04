@@ -10,11 +10,20 @@ desty_h = {"Content-Type": "application/json", "Authorization": f"Bearer {ACCESS
 
 def safe_req(url, data=None, method="GET", timeout=15):
     try:
-        r = urllib.request.Request(url, data=data, headers=sr if data else {"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}"}, method=method)
+        if isinstance(data, str):
+            payload = data.encode()
+        elif data is not None and not isinstance(data, (bytes, bytearray)):
+            payload = json.dumps(data).encode()
+        else:
+            payload = data
+        headers = sr if payload is not None or method in ("PATCH", "POST") else {"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}"}
+        r = urllib.request.Request(url, data=payload, headers=headers, method=method)
         with urllib.request.urlopen(r, timeout=timeout) as resp:
             body = resp.read().decode()
             return json.loads(body) if body.strip() else None
-    except: return None
+    except Exception as e:
+        print(f"  request error: {method} {url.split('/rest/v1/')[-1]} → {e}")
+        return None
 
 print(f"[{time.strftime('%H:%M:%S')}] Desty Sync started")
 
