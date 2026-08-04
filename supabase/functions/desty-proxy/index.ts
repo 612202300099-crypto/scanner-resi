@@ -4,10 +4,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const DESTY_BASE = "https://omni.desty.app/api";
-const ACCESS_TOKEN = "13e212ad-4fe0-4fe9-840a-b8200ff8f370";
-const TENANT_ID = "165686";
+const ACCESS_TOKEN = Deno.env.get("DESTY_ACCESS_TOKEN") || "";
+const TENANT_ID = Deno.env.get("DESTY_TENANT_ID") || "";
 
 serve(async (req: Request) => {
+  if (!ACCESS_TOKEN || !TENANT_ID) {
+    return new Response(JSON.stringify({ error: "Missing Desty server env" }), { status: 500, headers: { "Content-Type": "application/json" } });
+  }
+
   // CORS
   if (req.method === "OPTIONS") {
     return new Response(null, {

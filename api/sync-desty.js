@@ -46,7 +46,7 @@ async function destyFetch(path, body, env) {
     headers: {
       ...JSON_HEADERS,
       Authorization: `Bearer ${env.DESTY_ACCESS_TOKEN}`,
-      tenantid: env.DESTY_TENANT_ID || '165686',
+      tenantid: env.DESTY_TENANT_ID,
       locale: 'idn',
       ispending: 'true',
       Origin: 'https://omni.desty.app',
@@ -235,10 +235,10 @@ export default async function handler(req, res) {
     SUPABASE_URL: process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
     SUPABASE_SERVICE_ROLE: process.env.SUPABASE_SERVICE_ROLE,
     DESTY_ACCESS_TOKEN: process.env.DESTY_ACCESS_TOKEN,
-    DESTY_TENANT_ID: process.env.DESTY_TENANT_ID || '165686',
+    DESTY_TENANT_ID: process.env.DESTY_TENANT_ID,
   };
 
-  const missing = Object.entries(env).filter(([key, value]) => key !== 'DESTY_TENANT_ID' && !value).map(([key]) => key);
+  const missing = Object.entries(env).filter(([, value]) => !value).map(([key]) => key);
   if (missing.length) return json(res, 500, { success: false, error: `Missing server env: ${missing.join(', ')}` });
 
   try {

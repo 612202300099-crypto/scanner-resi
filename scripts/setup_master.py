@@ -18,6 +18,9 @@ What this does:
 
 import os, sys, json, time, re, subprocess
 import urllib.request, urllib.error
+from env_loader import load_local_env
+
+load_local_env()
 
 # ============================================================
 # CONFIG
@@ -31,10 +34,10 @@ DB_USER = f"postgres.{PROJECT_REF}"
 
 DB_PASSWORD = os.environ.get("SUPABASE_DB_PASSWORD", "")
 SERVICE_ROLE = os.environ.get("SUPABASE_SERVICE_ROLE", "")
-ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmeWdvaHN0dGNoaGd4b3pjd2NkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NDY1ODksImV4cCI6MjEwMDUyMjU4OX0.k0gUeE7deOlGyBxI3pXm9TLk_IjaBD72hZ_t8ku6ErU"
+ANON_KEY = os.environ.get("SUPABASE_ANON_KEY", os.environ.get("VITE_SUPABASE_ANON_KEY", ""))
 
 PROD_URL = "https://zervdttmbpenbujkjcrn.supabase.co"
-PROD_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplcnZkdHRtYnBlbmJ1amtqY3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MDk3MDksImV4cCI6MjA4OTM4NTcwOX0.CaIcoSbA_DQkWg-RNUA4KHj-1wlEL2OUCfnuYLb51gc"
+PROD_ANON_KEY = os.environ.get("PROD_SUPABASE_ANON_KEY", "")
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR = os.path.dirname(SCRIPT_DIR)

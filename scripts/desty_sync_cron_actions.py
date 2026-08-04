@@ -5,9 +5,9 @@ import urllib.request, json, time, os, sys
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SERVICE_ROLE = os.environ.get("SUPABASE_SERVICE_ROLE", "")
 ACCESS_TOKEN = os.environ.get("DESTY_ACCESS_TOKEN", "")
-TENANT_ID = os.environ.get("DESTY_TENANT_ID", "165686")
+TENANT_ID = os.environ.get("DESTY_TENANT_ID", "")
 
-if not SERVICE_ROLE or not ACCESS_TOKEN or not SUPABASE_URL:
+if not SERVICE_ROLE or not ACCESS_TOKEN or not SUPABASE_URL or not TENANT_ID:
     print("ERROR: Missing secrets")
     sys.exit(1)
 

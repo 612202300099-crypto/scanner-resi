@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 """Sync Desty → Production Supabase. Counts first (fast), then orders."""
-import urllib.request, json, time
+import urllib.request, json, time, os, sys
+from env_loader import load_local_env
 
-SUPABASE_URL = "https://zervdttmbpenbujkjcrn.supabase.co"
-SERVICE_ROLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplcnZkdHRtYnBlbmJ1amtqY3JuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzgwOTcwOSwiZXhwIjoyMDg5Mzg1NzA5fQ.HNfmKammNVgIG-_Z4gIt-wskc5NufvEqWTpmDFMH-2Q"
-ACCESS_TOKEN = "13e212ad-4fe0-4fe9-840a-b8200ff8f370"
+load_local_env()
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SERVICE_ROLE = os.environ.get("SUPABASE_SERVICE_ROLE", "")
+ACCESS_TOKEN = os.environ.get("DESTY_ACCESS_TOKEN", "")
+TENANT_ID = os.environ.get("DESTY_TENANT_ID", "")
+
+missing = [k for k, v in {
+    "SUPABASE_URL": SUPABASE_URL,
+    "SUPABASE_SERVICE_ROLE": SERVICE_ROLE,
+    "DESTY_ACCESS_TOKEN": ACCESS_TOKEN,
+    "DESTY_TENANT_ID": TENANT_ID,
+}.items() if not v]
+if missing:
+    print("ERROR: Missing env: " + ", ".join(missing), file=sys.stderr)
+    sys.exit(1)
+
 sr = {"apikey": SERVICE_ROLE, "Authorization": f"Bearer {SERVICE_ROLE}", "Content-Type": "application/json", "Prefer": "return=representation"}
-desty_h = {"Content-Type": "application/json", "Authorization": f"Bearer {ACCESS_TOKEN}", "tenantid": "165686", "locale": "idn", "ispending": "true", "Origin": "https://omni.desty.app", "User-Agent": "Mozilla/5.0"}
+desty_h = {"Content-Type": "application/json", "Authorization": f"Bearer {ACCESS_TOKEN}", "tenantid": TENANT_ID, "locale": "idn", "ispending": "true", "Origin": "https://omni.desty.app", "User-Agent": "Mozilla/5.0"}
 
 def safe_req(url, data=None, method="GET", timeout=15):
     try:

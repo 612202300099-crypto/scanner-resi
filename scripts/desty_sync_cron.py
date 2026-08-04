@@ -4,14 +4,20 @@ Desty Sync Cron — syncs Processed orders & counts from Desty to Supabase
 Run every 2 minutes via Windows Task Scheduler / cron
 """
 import urllib.request, json, time, sys, os
+from env_loader import load_local_env
+
+load_local_env()
 
 # === CONFIG ===
 DESTY_API = "https://omni.desty.app/api/order-center"
-ACCESS_TOKEN = "13e212ad-4fe0-4fe9-840a-b8200ff8f370"
-TENANT_ID = "165686"
-
-SERVICE_ROLE = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmeWdvaHN0dGNoaGd4b3pjd2NkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDk0NjU4OSwiZXhwIjoyMTAwNTIyNTg5fQ.L0wSZdxLS_xRYx9u5IcPG6OjzBp3Pug8CBNaiVqDRuo"
-SUPABASE_URL = "https://ifygohsttchhgxozcwcd.supabase.co"
+ACCESS_TOKEN = os.environ.get("DESTY_ACCESS_TOKEN", "")
+TENANT_ID = os.environ.get("DESTY_TENANT_ID", "")
+SERVICE_ROLE = os.environ.get("SUPABASE_SERVICE_ROLE", "")
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+missing = [k for k, v in {"DESTY_ACCESS_TOKEN": ACCESS_TOKEN, "DESTY_TENANT_ID": TENANT_ID, "SUPABASE_SERVICE_ROLE": SERVICE_ROLE, "SUPABASE_URL": SUPABASE_URL}.items() if not v]
+if missing:
+    print("ERROR: Missing env: " + ", ".join(missing), file=sys.stderr)
+    sys.exit(1)
 
 desty_headers = {
     "Content-Type": "application/json",

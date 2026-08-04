@@ -20,5 +20,5 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
           DESTY_ACCESS_TOKEN: ${{ secrets.DESTY_ACCESS_TOKEN }}
-          DESTY_TENANT_ID: '165686'
+          DESTY_TENANT_ID: ${{ secrets.DESTY_TENANT_ID }}
         run: python scripts/desty_sync_cron_actions.py

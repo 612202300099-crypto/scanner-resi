@@ -10,15 +10,23 @@ import json
 import os
 import sys
 import time
+from env_loader import load_local_env
+
+load_local_env()
 
 # ============================================================
 # CONFIG
 # ============================================================
-PROD_URL = "https://zervdttmbpenbujkjcrn.supabase.co"
-PROD_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplcnZkdHRtYnBlbmJ1amtqY3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MDk3MDksImV4cCI6MjA4OTM4NTcwOX0.CaIcoSbA_DQkWg-RNUA4KHj-1wlEL2OUCfnuYLb51gc"
+PROD_URL = os.environ.get("PROD_SUPABASE_URL", "https://zervdttmbpenbujkjcrn.supabase.co")
+PROD_ANON_KEY = os.environ.get("PROD_SUPABASE_ANON_KEY", "")
 
-LOCAL_URL = "https://ifygohsttchhgxozcwcd.supabase.co"
-LOCAL_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlmeWdvaHN0dGNoaGd4b3pjd2NkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NDY1ODksImV4cCI6MjEwMDUyMjU4OX0.k0gUeE7deOlGyBxI3pXm9TLk_IjaBD72hZ_t8ku6ErU"
+LOCAL_URL = os.environ.get("LOCAL_SUPABASE_URL", "https://ifygohsttchhgxozcwcd.supabase.co")
+LOCAL_ANON_KEY = os.environ.get("LOCAL_SUPABASE_ANON_KEY", "")
+
+missing = [k for k, v in {"PROD_SUPABASE_ANON_KEY": PROD_ANON_KEY, "LOCAL_SUPABASE_ANON_KEY": LOCAL_ANON_KEY}.items() if not v]
+if missing:
+    print("ERROR: Missing env: " + ", ".join(missing), file=sys.stderr)
+    sys.exit(1)
 
 BATCH_SIZE = 500  # Insert batch size
 

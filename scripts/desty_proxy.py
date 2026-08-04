@@ -4,11 +4,17 @@ Desty API Proxy Server — bypasses CORS for frontend
 Usage: python scripts/desty_proxy.py
 Listens on localhost:8734
 """
-import http.server, json, urllib.request, ssl
+import http.server, json, urllib.request, ssl, os, sys
+from env_loader import load_local_env
+
+load_local_env()
 
 DESTY_BASE = "https://omni.desty.app/api"
-ACCESS_TOKEN = "13e212ad-4fe0-4fe9-840a-b8200ff8f370"
-TENANT_ID = "165686"
+ACCESS_TOKEN = os.environ.get("DESTY_ACCESS_TOKEN", "")
+TENANT_ID = os.environ.get("DESTY_TENANT_ID", "")
+if not ACCESS_TOKEN or not TENANT_ID:
+    print("ERROR: Missing env: DESTY_ACCESS_TOKEN, DESTY_TENANT_ID", file=sys.stderr)
+    sys.exit(1)
 
 class Proxy(http.server.BaseHTTPRequestHandler):
     def do_OPTIONS(self):
