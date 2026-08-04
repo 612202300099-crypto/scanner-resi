@@ -9750,3 +9750,67 @@ warning: Failed to set cwd to temp dir
 [23:46:01] Counts: ready=283, processed=283, toProcess=0
 [23:48:44] Page 5 error: Expecting value: line 1 column 1 (char 0)
 [23:48:44] Done! New: 0, Updated: 242
+[23:50:01] Starting Desty sync...
+[23:50:01] Counts: ready=283, processed=283, toProcess=0
+[23:52:32] Page 5 error: Expecting value: line 1 column 1 (char 0)
+[23:52:32] Done! New: 0, Updated: 243
+[23:54:01] Starting Desty sync...
+[23:54:01] Counts: ready=283, processed=283, toProcess=0
+[23:56:23] Page 5 error: Expecting value: line 1 column 1 (char 0)
+[23:56:23] Done! New: 0, Updated: 244
+[23:58:01] Starting Desty sync...
+[23:58:01] Counts: ready=284, processed=283, toProcess=1
+[00:00:27] Page 5 error: Expecting value: line 1 column 1 (char 0)
+[00:00:27] Done! New: 0, Updated: 246
+[00:02:01] Starting Desty sync...
+[00:02:01] Counts: ready=284, processed=284, toProcess=0
+[00:02:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[00:02:02] Done! New: 0, Updated: 0
+[00:04:01] Starting Desty sync...
+[00:04:01] Counts: ready=284, processed=284, toProcess=0
+[00:06:24] Page 5 error: Expecting value: line 1 column 1 (char 0)
+[00:06:24] Done! New: 0, Updated: 247
+[08:46:16] Starting Desty sync...
+[08:46:16] Counts: ready=167, processed=167, toProcess=0
+[08:46:18] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:46:18] Done! New: 0, Updated: 0
+[08:48:01] Starting Desty sync...
+[08:48:02] Counts: ready=168, processed=167, toProcess=1
+[08:48:03] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:48:03] Done! New: 0, Updated: 1
+[08:50:03] Starting Desty sync...
+[08:50:03] Counts: ready=168, processed=167, toProcess=1
+[08:50:05] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:50:05] Done! New: 0, Updated: 2
+[08:52:01] Starting Desty sync...
+[08:52:01] Counts: ready=168, processed=168, toProcess=0
+[08:52:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:52:02] Done! New: 0, Updated: 0
+[08:54:04] Starting Desty sync...
+[08:54:05] Counts: ready=168, processed=168, toProcess=0
+[08:54:10] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:54:10] Done! New: 0, Updated: 4
+[08:56:01] Starting Desty sync...
+[08:56:01] Counts: ready=168, processed=168, toProcess=0
+[08:56:05] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:56:05] Done! New: 0, Updated: 5
+[08:58:01] Starting Desty sync...
+[08:58:01] Counts: ready=169, processed=168, toProcess=1
+[08:58:06] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[08:58:06] Done! New: 0, Updated: 6
+[09:00:01] Starting Desty sync...
+[09:00:01] Counts: ready=169, processed=168, toProcess=1
+[09:00:06] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[09:00:06] Done! New: 0, Updated: 7
+[09:02:01] Starting Desty sync...
+[09:02:01] Counts: ready=171, processed=170, toProcess=1
+[09:02:02] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[09:02:02] Done! New: 0, Updated: 0
+[09:04:02] Starting Desty sync...
+[09:04:02] Counts: ready=171, processed=170, toProcess=1
+[09:04:04] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[09:04:04] Done! New: 0, Updated: 1
+[09:06:01] Starting Desty sync...
+[09:06:01] Counts: ready=171, processed=170, toProcess=1
+[09:06:08] Page 1 error: Expecting value: line 1 column 1 (char 0)
+[09:06:08] Done! New: 0, Updated: 10

@@ -81,8 +81,8 @@ export default function ShippingBoard() {
       }
       setScanMap(sm);
 
-      // 3. Orders → normalize to packages
-      let q = supabase.from('orders').select('*').eq('order_status', 'Processed');
+      // Orders → normalize to packages (ALL statuses: Processed + To_Process)
+      let q = supabase.from('orders').select('*').in('order_status', ['Processed','To_Process']);
       if (orderDateFrom) q = q.gte('order_date_wib', orderDateFrom);
       if (orderDateTo) q = q.lte('order_date_wib', orderDateTo);
       const { data: ord } = await q.order('order_create_time', { ascending: false });
@@ -198,6 +198,7 @@ export default function ShippingBoard() {
   const terlambatGudangCount = terlambatGudang.length;
 
   // 7. Per Toko
+  const missedPickup = readyPackages.filter(p => p.deadlineEpoch > 0 && nowEpoch > p.deadlineEpoch && isScanned(p));
   const deadlineStores = useMemo(() => {
     const m: Record<string, { platform: string; total: number; clear: number; belum: number; terlambatGudang: number; terlambatPlatform: number; pkgs: Package[] }> = {};
     wajibKirimHariIni.forEach(p => {
@@ -263,6 +264,7 @@ export default function ShippingBoard() {
         <CC icon={<Calendar size={18} />} label="Wajib Kirim Hari Ini" value={totalWajib} color="#f59e0b" sub={`Deadline ${today}`} onClick={() => setDetailPopup({ title: 'Wajib Kirim Hari Ini', pkgs: wajibKirimHariIni })} />
         <CC icon={<AlertCircle size={18} />} label="Terlambat Platform" value={terlambatPlatformCount} color="#dc2626" sub="Lewat deadline" onClick={() => setDetailPopup({ title: 'Terlambat Platform', pkgs: terlambatPlatform })} />
         <CC icon={<Clock size={18} />} label="Terlambat Gudang" value={terlambatGudangCount} color="#991b1b" sub={cutoffReached ? `>${JAM_BATAS}:00` : `Belum ${JAM_BATAS}:00`} onClick={() => setDetailPopup({ title: 'Terlambat Gudang', pkgs: terlambatGudang })} />
+        <CC icon={<AlertCircle size={18} />} label="Menunggu Pickup" value={missedPickup.length} color="#f59e0b" sub="Packed, deadline lewat" onClick={() => setDetailPopup({ title: 'Menunggu Pickup Kurir', pkgs: missedPickup })} />
       </div>
 
       {/* PROGRESS SCAN */}
