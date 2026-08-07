@@ -4,21 +4,42 @@ on:
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/desty-sync.yml'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
-      - uses: actions/checkout@v4
+      - name: Trigger Vercel Desty sync endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "Triggering https://scanner-resi.vercel.app/api/sync-desty"
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+          response_file="$(mktemp)"
+          http_code=$(curl -sS \
+            --max-time 55 \
+            -X POST \
+            -H 'Content-Type: application/json' \
+            -o "$response_file" \
+            -w '%{http_code}' \
+            'https://scanner-resi.vercel.app/api/sync-desty')
 
-      - name: Sync Desty → Supabase
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
-          DESTY_ACCESS_TOKEN: ${{ secrets.DESTY_ACCESS_TOKEN }}
-          DESTY_TENANT_ID: ${{ secrets.DESTY_TENANT_ID }}
-        run: python scripts/desty_sync_cron_actions.py
+          echo "HTTP ${http_code}"
+          cat "$response_file"
+          echo
+
+          if [ "$http_code" != "200" ]; then
+            echo "Sync endpoint returned HTTP ${http_code}" >&2
+            exit 1
+          fi
+
+          if ! grep -q '"success":true' "$response_file"; then
+            echo "Sync endpoint did not report success=true" >&2
+            exit 1
+          fi
+
+          echo "Desty sync completed successfully."
