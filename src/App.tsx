@@ -45,14 +45,20 @@ function App() {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      setSession(s);
-      if (s?.user) {
-        fetchRole(s.user);
-      } else {
+    supabase.auth.getSession()
+      .then(({ data: { session: s } }) => {
+        setSession(s);
+        if (s?.user) {
+          fetchRole(s.user);
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        // Supabase tidak terjangkau — jangan biarkan layar loading macet selamanya
+        console.error('Gagal memuat sesi:', err);
         setLoading(false);
-      }
-    });
+      });
 
     const {
       data: { subscription },

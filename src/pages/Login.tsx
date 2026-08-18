@@ -13,13 +13,18 @@ export default function Login() {
         setLoading(true);
         setErrorMsg('');
 
-        const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
 
-        if (error) {
-            setErrorMsg('Gagal masuk. Periksa email dan password Anda.');
+            if (error) {
+                setErrorMsg('Gagal masuk. Periksa email dan password Anda.');
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            setErrorMsg('Server tidak merespons. Periksa koneksi Anda, lalu coba lagi.');
         }
         setLoading(false);
     };
