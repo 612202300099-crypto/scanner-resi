@@ -73,32 +73,38 @@ export default function ShippingBoard() {
       const { data: dc } = await supabase.from('desty_counts').select('*').eq('id', 1).maybeSingle();
       if (dc) setDestyCounts(dc);
 
-      // 2. Scan counts + ALL KELUAR scans → map by resi
+      // 2. Scan counts + match KELUAR scans by resi (reverse query — never load all 20k scans)
       const { count: returCount } = await supabase.from('scans').select('*', { count: 'exact', head: true }).eq('status', 'RETUR');
       setReturScanCount(returCount || 0);
       const sm = new Map<string, Set<string>>();
-      let off = 0;
-      while (true) {
-        const { data: scans } = await supabase.from('scans').select('resi').eq('status', 'KELUAR').range(off, off + 999);
-        if (!scans || scans.length === 0) break;
-        scans.forEach((s: any) => { if (s.resi) sm.set(s.resi.trim().toUpperCase(), new Set([s.resi.trim().toUpperCase()])); });
-        off += 1000;
-      }
-      setScanMap(sm);
 
-      // Orders → normalize to packages (ALL statuses: Processed + To_Process)
+      // Load orders first (needed for reverse scan matching)
       let q = supabase.from('orders').select('*').in('order_status', ['Processed','To_Process']);
       if (orderDateFrom) q = q.gte('order_date_wib', orderDateFrom);
       if (orderDateTo) q = q.lte('order_date_wib', orderDateTo);
       const { data: ord } = await q.order('order_create_time', { ascending: false });
       const allOrders = ord || [];
 
-      // Load items
+      // Load items for those orders
       const itemsMap: Record<string, any[]> = {};
       if (allOrders.length) {
         const { data: itm } = await supabase.from('order_items').select('*').in('order_id', allOrders.map(o => o.id));
         (itm || []).forEach((i: any) => { if (!itemsMap[i.order_id]) itemsMap[i.order_id] = []; itemsMap[i.order_id].push(i); });
       }
+
+      // Collect tracking numbers and match against KELUAR scans in batches
+      const tns = new Set<string>();
+      Object.values(itemsMap).forEach(items => items.forEach((i: any) => {
+        const t = (i.tracking_number || '').trim().toUpperCase();
+        if (t) tns.add(t);
+      }));
+      const tnArray = [...tns];
+      for (let i = 0; i < tnArray.length; i += 100) {
+        const batch = tnArray.slice(i, i + 100);
+        const { data: matched } = await supabase.from('scans').select('resi').eq('status', 'KELUAR').in('resi', batch);
+        (matched || []).forEach((s: any) => { if (s.resi) sm.set(s.resi.trim().toUpperCase(), new Set([s.resi.trim().toUpperCase()])); });
+      }
+      setScanMap(sm);
 
       // Normalize to packages
       const pkgs: Package[] = allOrders.map(o => {
